@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  scrapper:
+    build:
+      context: .
+    container_name: healthcheck_scrapper
+    volumes:
+      - ./spiders:/project/spiders
+    tty: true
