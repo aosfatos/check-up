@@ -1,0 +1,15 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+playwright = "==1.43.0"
+ipython = "==8.24.0"
+scrapy = "==2.11.1"
+scrapy-playwright = "==0.0.34"
+
+[dev-packages]
+
+[requires]
+python_version = "3.12"
