@@ -2,9 +2,11 @@ version: "3"
 
 services:
   scrapper:
+    env_file: .env
     build:
       context: .
     container_name: healthcheck_scrapper
     volumes:
       - ./spiders:/project/spiders
+      - ./plays:/project/plays
     tty: true
