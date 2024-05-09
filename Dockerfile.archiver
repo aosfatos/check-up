@@ -1,0 +1,8 @@
+FROM webrecorder/browsertrix-crawler:0.8.0
+
+WORKDIR /project
+RUN pip install ipython
+CMD ipython
+
+
+# crawl --url "https://www.financiacion-empresarial.com/vida-edgewater-miami/"             "--combineWARC" "--depth" 1 --workers 1 --collection archives --cwd /tmp/archives

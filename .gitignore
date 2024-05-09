@@ -1,2 +1,5 @@
 *.py[co]
 *.swp
+.env
+collections/
+*.warc.*
