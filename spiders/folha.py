@@ -83,8 +83,6 @@ class VejaSpider(BaseSpider):
             for link_content in links_content:
                 title = link_content.xpath('.//div[@data-item-title]/@data-item-title').get()
                 external_link = link_content.xpath(".//a").attrib["href"]
-                if self.name in external_link:
-                    continue
                 thumbnail = link_content.xpath('.//div[@data-item-thumb]/@data-item-thumb').get()
                 logging.info(f"Saving data from {external_link}...")
                 tag = self.get_tag(link_content)
