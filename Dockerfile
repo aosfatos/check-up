@@ -30,15 +30,15 @@ WORKDIR /project
 
 ENV PATH=/usr/src/.venv/bin:$PATH
 
-RUN groupadd -g 32767 herokuishuser \
-    && useradd -m -l herokuishuser -u 32767 -g 32767 \
-    && chown herokuishuser -R .
+# RUN groupadd -g 32767 herokuishuser \
+#     && useradd -m -l herokuishuser -u 32767 -g 32767 \
+#     && chown herokuishuser -R .
 
 COPY . .
 
 ENV PLAYWRIGHT_BROWSERS_PATH=/project/playwright
 RUN playwright install --with-deps chromium
 
-USER herokuishuser
+# USER herokuishuser
 
 CMD ipython
