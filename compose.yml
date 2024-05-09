@@ -10,3 +10,11 @@ services:
       - ./spiders:/project/spiders
       - ./plays:/project/plays
     tty: true
+
+  archiver:
+    env_file: .env
+    build:
+      context: .
+      dockerfile: Dockerfile.archiver
+    container_name: healthcheck_archiver
+    tty: true
