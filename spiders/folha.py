@@ -5,6 +5,7 @@ from scrapy_playwright.page import PageMethod
 from playwright.sync_api import TimeoutError as PlayWrightTimeoutError
 
 from base import BaseSpider
+from items import AdItem
 
 
 class VejaSpider(BaseSpider):
@@ -88,10 +89,10 @@ class VejaSpider(BaseSpider):
                 logging.info(f"Saving data from {external_link}...")
                 tag = self.get_tag(link_content)
                 logging.info(f"TITLE {title}")
-                yield {
-                    "title": title,
-                    "external_link": external_link,
-                    "thumbnail": thumbnail,
-                    "tag": tag,
-                    "original_url": response.url,
-                }
+                yield AdItem(
+                    title=title,
+                    external_link=external_link,
+                    thumbnail=thumbnail,
+                    tag=tag,
+                    original_url=response.url,
+                )
