@@ -20,7 +20,6 @@ def crawl_taboola(url, screenshot=False):
         time.sleep(WAIT_TIME)
         page.locator(".tbl-feed-header-text").scroll_into_view_if_needed()
         time.sleep(WAIT_TIME)
-        time.sleep(WAIT_TIME)
         if screenshot:
             screenshot_name = str(uuid4())
             logger.info(f"Taking screenshot from {url}. Saving file at {screenshot_name}")
