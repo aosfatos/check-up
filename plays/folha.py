@@ -6,7 +6,7 @@ from loguru import logger
 from playwright.sync_api import sync_playwright
 
 
-PERSISTENT_DIR = Path("./persistent")
+PERSISTENT_DIR = Path("./folha-session")
 WAIT_TIME = 3
 
 

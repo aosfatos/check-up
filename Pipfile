@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 playwright = "==1.43.0"
-ipython = "==8.24.0"
+ipython = "==8.18.1"
 scrapy = "==2.11.1"
 scrapy-playwright = "==0.0.34"
 pytz = "==2024.1"
