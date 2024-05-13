@@ -5,22 +5,31 @@ from loguru import logger
 from pathlib import Path
 from playwright.sync_api import TimeoutError as PlaywirghtTimeoutError, sync_playwright
 
+from plays.utils import get_or_none
+
 
 WAIT_TIME = 3
 PERSISTENT_DIR = Path("./veja-session")
 HEADLESS = config("HEADLESS", cast=bool)
 
 
-def get_objects(elements):
+def find_attributes(html_content, ad_panel_content, thumbnail_content):
+    return {
+        "ad_title": get_or_none(r"<title>(.*?)</title>", html_content),
+        "ad_url": get_or_none(r'</script>\n<a href="(.*?)"', html_content),
+        "thumbnail_url": get_or_none(r'img src="(.*?)"', thumbnail_content),
+        "tag": get_or_none(r'<div class="mcdomain"><a[^>]+>(.*?)<\/a><\/div>', ad_panel_content),
+    }
+
+
+def parse_elements(elements):
     n_elements = elements.count()
-    objects = []
     elements_row = []
     for i in range(n_elements):
         current_element = elements.nth(i)
         elements_row.append(current_element)
-        objects.append(current_element.inner_html())
 
-    return objects, elements_row
+    return elements_row
 
 
 def get_hrefs(elements):
@@ -48,20 +57,26 @@ def crawl_mgid(url):
         page.locator(".mgbox").scroll_into_view_if_needed()
         time.sleep(WAIT_TIME)
 
+        entry_title = page.locator("h1.title").inner_text()
+
         elements = page.locator(".mgline")
 
-        objs, elements = get_objects(elements)
+        elements = parse_elements(elements)
         hrefs = get_hrefs(elements)
-        ad_pages = []
-        for href in hrefs:
+        page = browser.new_page()
+        ad_attributes = []
+        for element, href in zip(elements, hrefs):
             try:
                 logger.info(f"Opening AD URL '{href}'")
                 page.goto(href)
                 time.sleep(WAIT_TIME * 2)
                 logger.info(f"Getting page content '{href}'")
-                ad_pages.append(page.content())
+                page_content = page.content()
+                thumbnail_content = page.locator(".news__image_big").inner_html()
+                element_content = element.inner_html()
+                ad_attributes.append(find_attributes(page_content, element_content, thumbnail_content))
             except PlaywirghtTimeoutError:
                 logger.error(f"Error getting content from '{href}'")
 
         logger.info("Done")
-        return objs, ad_pages
+        return {"entry_title": entry_title, "ads": ad_attributes, "entry_url": url}
