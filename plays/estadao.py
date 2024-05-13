@@ -8,6 +8,7 @@ from playwright.sync_api import sync_playwright
 
 PERSISTENT_DIR = Path("./estadao-session")
 WAIT_TIME = 3
+HEADLESS = config("HEADLESS", cast=bool)
 
 
 def get_objects(elements):
@@ -26,7 +27,7 @@ def get_objects(elements):
 def login():
     with sync_playwright() as p:
         logger.info("Launching Browser...")
-        browser = p.firefox.launch_persistent_context(PERSISTENT_DIR, headless=False)
+        browser = p.firefox.launch_persistent_context(PERSISTENT_DIR, headless=HEADLESS)
         logger.info("Done!")
         page = browser.new_page()
         url = "https://acesso.estadao.com.br/login/"
@@ -46,7 +47,7 @@ def login():
 def outbrain(url):
     with sync_playwright() as p:
         logger.info("Launching Browser...")
-        browser = p.firefox.launch_persistent_context(PERSISTENT_DIR, headless=False)
+        browser = p.firefox.launch_persistent_context(PERSISTENT_DIR, headless=HEADLESS)
         logger.info("Done!")
         page = browser.new_page()
         logger.info(f"Opening URL '{url}'...")
