@@ -65,4 +65,4 @@ def crawl_taboola(url):
 
         logger.info("Done")
 
-    return {"entry_title": entry_title, "ads": ad_attributes}
+    return {"entry_title": entry_title, "ads": ad_attributes, "entry_url": url}

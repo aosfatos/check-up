@@ -5,10 +5,24 @@ from decouple import config
 from loguru import logger
 from playwright.sync_api import sync_playwright
 
+from plays.utils import get_or_none
+
 
 PERSISTENT_DIR = Path("./estadao-session")
 WAIT_TIME = 3
 HEADLESS = config("HEADLESS", cast=bool)
+
+
+def find_attributes(html_content):
+    return {
+        "ad_title": get_or_none(r'title="(.*?)"', html_content),
+        "ad_url": get_or_none(r'href="(.*?)"', html_content),
+        "thumbnail_url": get_or_none(r'src="(.*?)"', html_content),
+        "tag": get_or_none(
+            r'<span class="ob-unit ob-rec-source" data-type="Source">(.*?)<\/span>',
+            html_content
+        ),
+    }
 
 
 def get_objects(elements):
@@ -55,5 +69,13 @@ def outbrain(url):
         time.sleep(WAIT_TIME)
         page.locator(".OB-REACT-WRAPPER").scroll_into_view_if_needed()
         time.sleep(WAIT_TIME)
+        page.locator("//footer").first.scroll_into_view_if_needed()
         elements = page.locator(".ob-dynamic-rec-container")
-        return get_objects(elements)
+        time.sleep(WAIT_TIME)
+        objects = get_objects(elements)
+        ad_attributes = []
+        entry_title = page.locator("h1").first.inner_text()
+        for obj in objects:
+            ad_attributes.append(find_attributes(obj))
+
+    return {"entry_title": entry_title, "ads": ad_attributes, "entry_url": url}
