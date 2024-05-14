@@ -10,6 +10,8 @@ services:
       - ./spiders:/project/spiders
       - ./plays:/project/plays
     tty: true
+    depends_on:
+      - db
 
   archiver:
     env_file: .env
@@ -18,3 +20,18 @@ services:
       dockerfile: Dockerfile.archiver
     container_name: healthcheck_archiver
     tty: true
+    depends_on:
+      - db
+
+  db:
+    image: postgres:16
+    container_name: healthcheck_db
+    env_file: ./docker/.env-postgres
+    ports:
+      - "15433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
+    driver: local

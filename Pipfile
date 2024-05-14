@@ -11,6 +11,10 @@ scrapy-playwright = "==0.0.34"
 pytz = "==2024.1"
 python-decouple = "==3.8"
 loguru = "==0.7.2"
+sqlalchemy = "==2.0.30"
+psycopg2-binary = "==2.9.9"
+typing-extensions = "==4.11.0"
+sqlalchemy-utils = "==0.41.2"
 
 [dev-packages]
 
