@@ -1,3 +1,4 @@
+from loguru import logger
 from playwright.sync_api import TimeoutError as PlayWrightTimeoutError
 
 
@@ -19,11 +20,13 @@ class BasePlay:
         raise NotImplementedError()
 
     def execute(self):
+        output = None
         self.pre_run()
         # TODO: retry
         try:
             output = self.run()
-        except PlayWrightTimeoutError:
-            pass
+        except PlayWrightTimeoutError as exc:
+            logger.error(str(exc))
+
         output = self.post_run(output)
         return output
