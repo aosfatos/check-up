@@ -13,7 +13,7 @@ PERSISTENT_DIR = Path("./veja-session")
 HEADLESS = config("HEADLESS", cast=bool)
 
 
-def find_attributes(html_content, ad_panel_content, thumbnail_content):
+def find_items(html_content, ad_panel_content, thumbnail_content):
     return {
         "ad_title": get_or_none(r"<title>(.*?)</title>", html_content),
         "ad_url": get_or_none(r'</script>\n<a href="(.*?)"', html_content),
@@ -64,7 +64,7 @@ def crawl_mgid(url):
         elements = parse_elements(elements)
         hrefs = get_hrefs(elements)
         page = browser.new_page()
-        ad_attributes = []
+        ad_items = []
         for element, href in zip(elements, hrefs):
             try:
                 logger.info(f"Opening AD URL '{href}'")
@@ -74,9 +74,9 @@ def crawl_mgid(url):
                 page_content = page.content()
                 thumbnail_content = page.locator(".news__image_big").inner_html()
                 element_content = element.inner_html()
-                ad_attributes.append(find_attributes(page_content, element_content, thumbnail_content))
+                ad_items.append(find_items(page_content, element_content, thumbnail_content))
             except PlaywirghtTimeoutError:
                 logger.error(f"Error getting content from '{href}'")
 
         logger.info("Done")
-        return {"entry_title": entry_title, "ads": ad_attributes, "entry_url": url}
+        return {"entry_title": entry_title, "ad_items": ad_items, "entry_url": url}

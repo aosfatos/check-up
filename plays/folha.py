@@ -13,7 +13,7 @@ WAIT_TIME = 3
 HEADLESS = config("HEADLESS", cast=bool)
 
 
-def find_attributes(html_content):
+def find_items(html_content):
     return {
         "ad_title": get_or_none(r'title="(.*?)"', html_content),
         "ad_url": get_or_none(r'href="(.*?)"', html_content),
@@ -58,11 +58,11 @@ def crawl_taboola(url):
 
         elements = page.locator(".videoCube")
         n_elements = elements.count()
-        ad_attributes = []
+        ad_items = []
         for i in range(n_elements):
             object_raw_html = elements.nth(i).inner_html()
-            ad_attributes.append(find_attributes(object_raw_html))
+            ad_items.append(find_items(object_raw_html))
 
         logger.info("Done")
 
-    return {"entry_title": entry_title, "ads": ad_attributes, "entry_url": url}
+    return {"entry_title": entry_title, "ad_items": ad_items, "entry_url": url}
