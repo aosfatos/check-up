@@ -1,9 +1,13 @@
+from playwright.sync_api import TimeoutError as PlayWrightTimeoutError
+
+
 class BasePlay:
-    def __init__(self, url, session_dir, wait_time=3, headless=True):
+    def __init__(self, url, session_dir, wait_time=3, headless=True, retries=3):
         self.url = url
         self.session_dir = session_dir
         self.wait_time = wait_time
         self.headless = headless
+        self.retries = retries
 
     def pre_run(self):
         raise NotImplementedError()
@@ -16,6 +20,10 @@ class BasePlay:
 
     def execute(self):
         self.pre_run()
-        output = self.run()
+        # TODO: retry
+        try:
+            output = self.run()
+        except PlayWrightTimeoutError:
+            pass
         output = self.post_run(output)
         return output
