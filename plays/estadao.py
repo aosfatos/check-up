@@ -81,7 +81,7 @@ class EstadaoPlay(BasePlay):
             time.sleep(self.wait_time)
             page.locator("//footer").first.scroll_into_view_if_needed()
             elements = page.locator(".ob-dynamic-rec-container")
-            time.sleep(self.wait_time)
+            time.sleep(self.wait_time * 2)
 
             entry_screenshot_path = self.take_screenshot(page, self.url, goto=False)
 
