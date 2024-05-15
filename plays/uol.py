@@ -8,6 +8,10 @@ from plays.utils import get_or_none
 
 
 class UOLPlay(BasePlay):
+    @classmethod
+    def match(cls, url):
+        return "noticias.uol.com.br" in url
+
     def pre_run(self):
         pass
 

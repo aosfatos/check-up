@@ -9,6 +9,10 @@ from plays.utils import get_or_none
 
 
 class EstadaoPlay(BasePlay):
+    @classmethod
+    def match(cls, url):
+        return "estadao.com.br" in url
+
     def login(self):
         with sync_playwright() as p:
             logger.info("Launching Browser...")

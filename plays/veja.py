@@ -8,6 +8,10 @@ from plays.utils import get_or_none
 
 
 class VejaPlay(BasePlay):
+    @classmethod
+    def match(cls, url):
+        return "veja.abril.com.br" in url
+
     def find_items(self, html_content, ad_panel_content, thumbnail_content):
         return {
             "ad_title": get_or_none(r"<title>(.*?)</title>", html_content),

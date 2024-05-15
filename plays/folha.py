@@ -9,6 +9,10 @@ from plays.utils import get_or_none
 
 
 class FolhaPlay(BasePlay):
+    @classmethod
+    def match(cls, url):
+        return "folha.uol.com.br" in url
+
     def login(self):
         with sync_playwright() as p:
             logger.info("Launching Browser...")
