@@ -1,4 +1,10 @@
+from decouple import config
+from loguru import logger
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
+
 from plays.base import BasePlay
+from models import Advertisement, Entry, Portal, get_or_create
 
 
 if __name__ == "__main__":
@@ -31,7 +37,45 @@ if __name__ == "__main__":
 
     ]
 
+    urls = [
+        # folha
+        "https://www1.folha.uol.com.br/ciencia/2024/05/estudo-revela-evidencias-de-violencia-em-uma-epoca-de-crise-no-antigo-peru.shtml",
+        # estadao
+        "https://www.estadao.com.br/saude/sinais-precoces-de-alzheimer-podem-comecar-pelos-olhos-sugere-estudo-veja-o-que-isso-significa/",
+        # veja
+        "https://veja.abril.com.br/politica/justica-arquiva-inquerito-que-investigou-ex-ministro-por-crime-ambiental/",
+        # uol
+        "https://noticias.uol.com.br/colunas/jamil-chade/2024/05/15/lider-de-partido-alemao-aliado-a-bolsonaro-e-condenado-por-slogan-nazista.htm",
+
+    ]
+
+    engine = create_engine(config("DATABASE_URL"))
+    session = Session(engine)
     for url in urls:
-        scrapper = BasePlay.get_scrapper(url, headless=True)
+        scrapper = BasePlay.get_scrapper(url, headless=False)
         result = scrapper.execute()
-        print("RESULT", result)
+        # TODO: improve this query
+        portal = session.query(Portal).filter_by(scrapper.name.capitalize()).one()
+        logger.info(f"Saving entry {result['entry_title']} on database")
+        entry = get_or_create(
+            session,
+            Entry,
+            portal=portal,
+            url=result["entry_url"], defaults={"title": result["entry_title"]}
+        )
+        ads = []
+        for ad_item in result["ad_items"]:
+            ads.append(
+                Advertisement(
+                    entry=entry,
+                    title=ad_item["ad_title"],
+                    url=ad_item["ad_url"],
+                    thumbnail=ad_item["thumbnail_url"],
+                    tag=ad_item["tag"],
+                )
+            )
+
+        logger.info(f"Saving {len(ads)} ads to database")
+        session.add_all(ads)
+        session.commit()
+        logger.info("Done!")

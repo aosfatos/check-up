@@ -33,8 +33,8 @@ class Portal(Base):
     __tablename__ = "portal"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    name = Column(String, unique=True)
-    url = Column(URLType, unique=True)
+    name = Column(String, unique=True, nullable=False)
+    url = Column(URLType, unique=True, nullable=False)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
     entries: Mapped[List["Entry"]] = relationship(back_populates="portal")
@@ -68,7 +68,7 @@ class Advertisement(Base):
     url = Column(URLType, unique=True, nullable=False)
     title = Column(String, nullable=False)
     tag = Column(String, nullable=True)
-    thumbnail_url = Column(URLType, nullable=False)
+    thumbnail = Column(URLType, nullable=False)
     screenshot = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
@@ -76,3 +76,21 @@ class Advertisement(Base):
 
     def __repr__(self):
         return f"{self.url}: ({self.entry.url})"
+
+
+def get_or_create(session, model, defaults=None, **kwargs):
+    instance = session.query(model).filter_by(**kwargs).one_or_none()
+    if instance:
+        return instance, False
+    else:
+        kwargs |= defaults or {}
+        instance = model(**kwargs)
+        try:
+            session.add(instance)
+            session.commit()
+        except Exception:
+            session.rollback()
+            instance = session.query(model).filter_by(**kwargs).one()
+            return instance, False
+        else:
+            return instance, True
