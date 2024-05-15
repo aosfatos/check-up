@@ -68,7 +68,7 @@ class VejaPlay(BasePlay):
             entry_title = page.locator("h1.title").inner_text()
 
             elements = page.locator(".mgline")
-            entry_screenshot_path = self.take_screenshot(page, self.url)
+            entry_screenshot_path = self.take_screenshot(page, self.url, goto=False)
 
             elements = self.parse_elements(elements)
             hrefs = self.get_hrefs(elements)

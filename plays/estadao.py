@@ -83,7 +83,7 @@ class EstadaoPlay(BasePlay):
             elements = page.locator(".ob-dynamic-rec-container")
             time.sleep(self.wait_time)
 
-            entry_screenshot_path = self.take_screenshot(page, self.url)
+            entry_screenshot_path = self.take_screenshot(page, self.url, goto=False)
 
             objects = self.get_objects(elements)
             ad_items = []

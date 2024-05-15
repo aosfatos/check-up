@@ -68,13 +68,16 @@ class FolhaPlay(BasePlay):
             page.locator(".tbl-feed-header-text").scroll_into_view_if_needed()
             time.sleep(self.wait_time)
 
-            elements = page.locator(".videoCube")
+            elements = page.locator(".videoCube.syndicatedItem")
 
-            entry_screenshot_path = self.take_screenshot(page, self.url)
+            entry_screenshot_path = self.take_screenshot(page, self.url, goto=False)
 
             n_elements = elements.count()
             ad_items = []
             for i in range(n_elements):
+                element = elements.nth(i)
+                if not element.is_visible():
+                    continue
                 object_raw_html = elements.nth(i).inner_html()
                 ad_items.append(self.find_items(object_raw_html))
 

@@ -37,10 +37,11 @@ class BasePlay:
 
         return self.session_dir
 
-    def take_screenshot(self, page, url):
+    def take_screenshot(self, page, url, goto=True):
         logger.info(f"Taking screenshot from {url}...")
         temp_file = NamedTemporaryFile(suffix=".png", delete=False)
-        page.goto(url)
+        if goto:
+            page.goto(url)
         page.screenshot(full_page=True, path=temp_file.name)
         logger.info("Done!")
         return temp_file.name
