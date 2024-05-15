@@ -63,7 +63,7 @@ class BasePlay:
             logger.error(str(exc))
 
         output = self.post_run(output)
-        # Entry screenshot
+        logger.info(f"Taking screenshots of {output['entry_url']}...")
         with sync_playwright() as p:
             browser = p.firefox.launch_persistent_context(
                 self.get_session_dir(),
@@ -72,5 +72,6 @@ class BasePlay:
             page = browser.new_page()
             output["entry_screenshot_path"] = self.take_screenshot(page, output["entry_url"])
             for ad_item in output["ad_items"]:
+                logger.info(f"Taking screenshots of {ad_item['ad_url']}...")
                 ad_item["screenshot_path"] = self.take_screenshot(page, ad_item["ad_url"])
         return output
