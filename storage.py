@@ -15,9 +15,9 @@ def get_client():
     return client
 
 
-def upload_file(file_path, object_name, type_="entry"):
+def upload_file(file_path, object_name):
     s3_client = get_client()
     bucket = config("AWS_BUCKET_NAME")
-    response = s3_client.upload_file(file_path, bucket, f"screenshots/{type_}/{object_name}")
+    response = s3_client.upload_file(file_path, bucket, f"screenshots/{object_name}")
 
     return f"s3://{bucket}/{object_name}"

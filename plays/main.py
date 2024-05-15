@@ -69,16 +69,15 @@ if __name__ == "__main__":
         logger.info(f"Uploading entry {result['entry_title']} screenshot")
         entry_screenshot_url = upload_file(
             result["entry_screenshot_path"],
-            f"{now()}_{slugify(result['entry_url'])}",
-            type_="entry",
+            f"entries/{now()}_{slugify(result['entry_url'])}.png",
         )
         logger.info(f"Saving entry {result['entry_title']} on database")
         entry, _ = get_or_create(
             session,
             Entry,
             portal=portal,
-            screenshot=entry_screenshot_url,
-            url=result["entry_url"], defaults={"title": result["entry_title"]}
+            url=result["entry_url"],
+            defaults={"title": result["entry_title"], "screenshot": entry_screenshot_url},
         )
         ads = []
         for ad_item in result["ad_items"]:
