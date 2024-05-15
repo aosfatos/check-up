@@ -53,7 +53,7 @@ class UOLPlay(BasePlay):
                     "ad_url": get_or_none(r'<a href="(.*?)"', html_content),
                     "ad_title": get_or_none(r'aria-label="(.*?)"', html_content),
                     "thumbnail_url": get_or_none(r'source srcset="(.*?)"', html_content),
-                    "ad_tag": None,
+                    "tag": None,
                 }
             )
 
