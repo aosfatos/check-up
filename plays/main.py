@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from decouple import config
 from loguru import logger
 from slugify import slugify
@@ -7,6 +9,10 @@ from sqlalchemy.orm import Session
 from plays.base import BasePlay
 from models import Advertisement, Entry, Portal, get_or_create
 from storage import upload_file
+
+
+def now():
+    return datetime.now().strftime("%Y%m%d%H%M%S")
 
 
 if __name__ == "__main__":
@@ -63,7 +69,7 @@ if __name__ == "__main__":
         logger.info(f"Uploading entry {result['entry_title']} screenshot")
         entry_screenshot_url = upload_file(
             result["entry_screenshot_path"],
-            slugify(result["entry_url"]),
+            f"{now()}_{slugify(result['entry_url'])}",
             type_="entry",
         )
         logger.info(f"Saving entry {result['entry_title']} on database")
@@ -79,7 +85,7 @@ if __name__ == "__main__":
             logger.info(f"Uploading AD {ad_item['ad_title']} screenshot")
             ad_screenshot_url = upload_file(
                 ad_item["screenshot_path"],
-                slugify(ad_item["ad_url"]),
+                f"{now()}_{slugify(ad_item['ad_url'])}",
                 type_="ads",
             )
             ads.append(
