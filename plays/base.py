@@ -50,6 +50,7 @@ class BasePlay:
         # TODO: retry
         try:
             output = self.run()
+            logger.info(f"{self.name.capitalize()}: found {len(output['ad_items'])} items.")
         except PlayWrightTimeoutError as exc:
             logger.error(str(exc))
 

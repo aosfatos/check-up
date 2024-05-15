@@ -45,7 +45,6 @@ class EstadaoPlay(BasePlay):
 
     def get_objects(self, elements):
         n_elements = elements.count()
-        logger.info(f"Found {n_elements} elements")
         objects = []
         elements_row = []
         for i in range(n_elements):
