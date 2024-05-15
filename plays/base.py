@@ -64,7 +64,12 @@ class BasePlay:
 
         output = self.post_run(output)
         # Entry screenshot
-        with sync_playwright() as page:
+        with sync_playwright() as p:
+            browser = p.firefox.launch_persistent_context(
+                self.get_session_dir(),
+                headless=self.headless
+            )
+            page = browser.new_page()
             output["entry_screenshot_path"] = self.take_screenshot(page, output["entry_url"])
             for ad_item in output["ad_items"]:
                 ad_item["screenshot_path"] = self.take_screenshot(page, ad_item["ad_url"])

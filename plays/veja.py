@@ -52,6 +52,7 @@ class VejaPlay(BasePlay):
 
     def run(self):
         with sync_playwright() as p:
+            #TODO: method to lauch new page
             browser = p.firefox.launch_persistent_context(
                 self.get_session_dir(),
                 headless=self.headless
