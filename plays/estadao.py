@@ -9,6 +9,8 @@ from plays.utils import get_or_none
 
 
 class EstadaoPlay(BasePlay):
+    name = "estadao"
+
     @classmethod
     def match(cls, url):
         return "estadao.com.br" in url
@@ -16,7 +18,10 @@ class EstadaoPlay(BasePlay):
     def login(self):
         with sync_playwright() as p:
             logger.info("Launching Browser...")
-            browser = p.firefox.launch_persistent_context(self.session_dir, headless=self.headless)
+            browser = p.firefox.launch_persistent_context(
+                self.get_session_dir(),
+                headless=self.headless,
+            )
             logger.info("Done!")
             page = browser.new_page()
             url = "https://acesso.estadao.com.br/login/"
@@ -65,7 +70,7 @@ class EstadaoPlay(BasePlay):
         with sync_playwright() as p:
             logger.info("Launching Browser...")
             browser = p.firefox.launch_persistent_context(
-                self.session_dir,
+                self.get_session_dir(),
                 headless=self.headless
             )
             logger.info("Done!")

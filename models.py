@@ -16,6 +16,19 @@ from sqlalchemy_utils import URLType
 Base = declarative_base()
 
 
+def get_or_create_portal(session, portal_id):
+    post = session.query(Portal).filter_by(id=portal_id).first()
+    if post:
+        created = False
+        return post, created
+    else:
+        created = True
+        post = Portal(id=portal_id)
+        session.add(post)
+        session.commit()
+        return post, created
+
+
 class Portal(Base):
     __tablename__ = "portal"
 

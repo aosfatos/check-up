@@ -1,4 +1,5 @@
 import pytest
+from freezegun import freeze_time
 
 from plays.base import BasePlay
 from plays.exceptions import ScrapperNotFoundError
@@ -45,4 +46,20 @@ class TestBasePlay:
         url = "https://any.com.br"
 
         with pytest.raises(ScrapperNotFoundError):
-            scrapper = BasePlay.get_scrapper(url)
+            BasePlay.get_scrapper(url)
+
+    @freeze_time("2024-05-15 12:00:00")
+    def test_get_session(self):
+        url = "https://entry-url.com"
+
+        scrapper = BasePlay(url, session_dir="/tmp/session")
+
+        assert scrapper.get_session_dir() == "/tmp/session"
+
+    @freeze_time("2024-05-15 12:00:00")
+    def test_get_session_when_not_given(self):
+        url = "https://entry-url.com"
+
+        scrapper = BasePlay(url)
+
+        assert scrapper.get_session_dir() == "/tmp/base_session"

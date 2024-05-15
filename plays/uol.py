@@ -8,9 +8,15 @@ from plays.utils import get_or_none
 
 
 class UOLPlay(BasePlay):
+    name = "uol"
+
     @classmethod
     def match(cls, url):
-        return "noticias.uol.com.br" in url
+        for domain in ["noticias.uol.com.br", "www.uol.com.br"]:
+            if domain in url:
+                return True
+
+        return False
 
     def pre_run(self):
         pass

@@ -15,9 +15,10 @@ sqlalchemy = "==2.0.30"
 psycopg2-binary = "==2.9.9"
 typing-extensions = "==4.11.0"
 sqlalchemy-utils = "==0.41.2"
-pytest = "==8.2.0"
 
 [dev-packages]
+freezegun = "==1.5.1"
+pytest = "==8.2.0"
 
 [requires]
 python_version = "3.12"

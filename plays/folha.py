@@ -9,6 +9,8 @@ from plays.utils import get_or_none
 
 
 class FolhaPlay(BasePlay):
+    name = "folha"
+
     @classmethod
     def match(cls, url):
         return "folha.uol.com.br" in url
@@ -16,7 +18,10 @@ class FolhaPlay(BasePlay):
     def login(self):
         with sync_playwright() as p:
             logger.info("Launching Browser...")
-            browser = p.firefox.launch_persistent_context(self.session_dir, headless=self.headless)
+            browser = p.firefox.launch_persistent_context(
+                self.get_session_dir(),
+                headless=self.headless
+            )
             logger.info("Done!")
             page = browser.new_page()
             login_url = "https://login.folha.com.br/login"
@@ -50,7 +55,10 @@ class FolhaPlay(BasePlay):
 
     def run(self):
         with sync_playwright() as p:
-            browser = p.firefox.launch_persistent_context(self.session_dir, headless=self.headless)
+            browser = p.firefox.launch_persistent_context(
+                self.get_session_dir(),
+                headless=self.headless
+            )
             page = browser.new_page()
             logger.info(f"Opening URL {self.url}...")
             page.goto(self.url)

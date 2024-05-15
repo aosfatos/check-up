@@ -8,6 +8,8 @@ from plays.utils import get_or_none
 
 
 class VejaPlay(BasePlay):
+    name = "veja"
+
     @classmethod
     def match(cls, url):
         return "veja.abril.com.br" in url
@@ -50,7 +52,10 @@ class VejaPlay(BasePlay):
 
     def run(self):
         with sync_playwright() as p:
-            browser = p.firefox.launch_persistent_context(self.session_dir, headless=self.headless)
+            browser = p.firefox.launch_persistent_context(
+                self.get_session_dir(),
+                headless=self.headless
+            )
             page = browser.new_page()
             logger.info(f"Opening URL '{self.url}'...")
             page.goto(self.url)

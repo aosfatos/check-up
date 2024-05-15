@@ -5,6 +5,8 @@ from plays.exceptions import ScrapperNotFoundError
 
 
 class BasePlay:
+    name = "base"
+
     def __init__(self, url, session_dir=None, wait_time=3, headless=True, retries=3):
         self.url = url
         self.session_dir = session_dir
@@ -26,6 +28,12 @@ class BasePlay:
                 return scrapper(url, *args, **kwargs)
 
         raise ScrapperNotFoundError(f"No scrapper was found for url '{url}'")
+
+    def get_session_dir(self):
+        if self.session_dir is None:
+            return f"/tmp/{self.name}_session"
+
+        return self.session_dir
 
     def pre_run(self):
         raise NotImplementedError()
