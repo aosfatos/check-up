@@ -52,12 +52,14 @@ if __name__ == "__main__":
     engine = create_engine(config("DATABASE_URL"))
     session = Session(engine)
     for url in urls:
-        scrapper = BasePlay.get_scrapper(url, headless=False)
+        scrapper = BasePlay.get_scrapper(url, headless=True)
         result = scrapper.execute()
+        if result is None:
+            continue
         # TODO: improve this query
-        portal = session.query(Portal).filter_by(scrapper.name.capitalize()).one()
+        portal = session.query(Portal).filter_by(name=scrapper.name.capitalize()).one()
         logger.info(f"Saving entry {result['entry_title']} on database")
-        entry = get_or_create(
+        entry, _ = get_or_create(
             session,
             Entry,
             portal=portal,

@@ -65,7 +65,7 @@ class Advertisement(Base):
 
     id = Column(Integer, primary_key=True)
     entry_id: Mapped[int] = mapped_column(ForeignKey("entry.id"))
-    url = Column(URLType, unique=True, nullable=False)
+    url = Column(URLType, nullable=False)
     title = Column(String, nullable=False)
     tag = Column(String, nullable=True)
     thumbnail = Column(URLType, nullable=False)
