@@ -1,10 +1,12 @@
 from decouple import config
 from loguru import logger
+from slugify import slugify
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
 from plays.base import BasePlay
 from models import Advertisement, Entry, Portal, get_or_create
+from storage import upload_file
 
 
 if __name__ == "__main__":
@@ -58,21 +60,35 @@ if __name__ == "__main__":
             continue
         # TODO: improve this query
         portal = session.query(Portal).filter_by(name=scrapper.name.capitalize()).one()
+        logger.info(f"Uploading entry {result['entry_title']} screenshot")
+        entry_screenshot_url = upload_file(
+            result["entry_screenshot_path"],
+            slugify(result["entry_url"]),
+            type_="entry",
+        )
         logger.info(f"Saving entry {result['entry_title']} on database")
         entry, _ = get_or_create(
             session,
             Entry,
             portal=portal,
+            screenshot=entry_screenshot_url,
             url=result["entry_url"], defaults={"title": result["entry_title"]}
         )
         ads = []
         for ad_item in result["ad_items"]:
+            logger.info(f"Uploading AD {ad_item['ad_title']} screenshot")
+            ad_screenshot_url = upload_file(
+                ad_item["screenshot_path"],
+                slugify(ad_item["ad_url"]),
+                type_="ads",
+            )
             ads.append(
                 Advertisement(
                     entry=entry,
                     title=ad_item["ad_title"],
                     url=ad_item["ad_url"],
                     thumbnail=ad_item["thumbnail_url"],
+                    screenshot=ad_screenshot_url,
                     tag=ad_item["tag"],
                 )
             )

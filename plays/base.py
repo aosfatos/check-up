@@ -1,5 +1,7 @@
+from tempfile import NamedTemporaryFile
+
 from loguru import logger
-from playwright.sync_api import TimeoutError as PlayWrightTimeoutError
+from playwright.sync_api import TimeoutError as PlayWrightTimeoutError, sync_playwright
 
 from plays.exceptions import ScrapperNotFoundError
 
@@ -35,6 +37,12 @@ class BasePlay:
 
         return self.session_dir
 
+    def take_screenshot(self, page, url):
+        temp_file = NamedTemporaryFile(suffix=".png", delete=False)
+        page.goto(url)
+        page.screenshot(full_page=True, path=temp_file.name)
+        return temp_file.name
+
     def pre_run(self):
         raise NotImplementedError()
 
@@ -55,4 +63,9 @@ class BasePlay:
             logger.error(str(exc))
 
         output = self.post_run(output)
+        # Entry screenshot
+        with sync_playwright() as page:
+            output["entry_screenshot_path"] = self.take_screenshot(page, output["entry_url"])
+            for ad_item in output["ad_items"]:
+                ad_item["screenshot_path"] = self.take_screenshot(page, ad_item["ad_url"])
         return output
