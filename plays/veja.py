@@ -68,6 +68,7 @@ class VejaPlay(BasePlay):
             entry_title = page.locator("h1.title").inner_text()
 
             elements = page.locator(".mgline")
+            entry_screenshot_path = self.take_screenshot(page, self.url)
 
             elements = self.parse_elements(elements)
             hrefs = self.get_hrefs(elements)
@@ -89,4 +90,9 @@ class VejaPlay(BasePlay):
                     logger.error(f"Error getting content from '{href}'")
 
             logger.info("Done")
-            return {"entry_title": entry_title, "ad_items": ad_items, "entry_url": self.url}
+            return {
+                "entry_title": entry_title,
+                "ad_items": ad_items,
+                "entry_url": self.url,
+                "entry_screenshot_path": entry_screenshot_path,
+            }

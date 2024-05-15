@@ -82,10 +82,18 @@ class EstadaoPlay(BasePlay):
             page.locator("//footer").first.scroll_into_view_if_needed()
             elements = page.locator(".ob-dynamic-rec-container")
             time.sleep(self.wait_time)
+
+            entry_screenshot_path = self.take_screenshot(page, self.url)
+
             objects = self.get_objects(elements)
             ad_items = []
             entry_title = page.locator("h1").first.inner_text()
             for obj in objects:
                 ad_items.append(self.find_items(obj))
 
-        return {"entry_title": entry_title, "ad_items": ad_items, "entry_url": self.url}
+        return {
+            "entry_title": entry_title,
+            "ad_items": ad_items,
+            "entry_url": self.url,
+            "entry_screenshot_path": entry_screenshot_path,
+        }

@@ -73,6 +73,15 @@ class UOLPlay(BasePlay):
                 page.locator("[id^='google_ads_iframe_\\/8804\\/uol'][id$='_8']")
             )
             most_read_items = self.get_most_read_items(page.locator(".jupiter-most-read-now"))
+
+            entry_screenshot_path = self.take_screenshot(page, self.url)
+
             entry_title = page.locator("h1.title").inner_text()
             all_items = [ad_items] + most_read_items
-            return {"entry_title": entry_title, "ad_items": all_items, "entry_url": self.url}
+
+        return {
+            "entry_title": entry_title,
+            "ad_items": all_items,
+            "entry_url": self.url,
+            "entry_screenshot_path": entry_screenshot_path,
+        }

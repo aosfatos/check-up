@@ -69,6 +69,9 @@ class FolhaPlay(BasePlay):
             time.sleep(self.wait_time)
 
             elements = page.locator(".videoCube")
+
+            entry_screenshot_path = self.take_screenshot(page, self.url)
+
             n_elements = elements.count()
             ad_items = []
             for i in range(n_elements):
@@ -77,4 +80,9 @@ class FolhaPlay(BasePlay):
 
             logger.info("Done")
 
-        return {"entry_title": entry_title, "ad_items": ad_items, "entry_url": self.url}
+        return {
+            "entry_title": entry_title,
+            "ad_items": ad_items,
+            "entry_url": self.url,
+            "entry_screenshot_path": entry_screenshot_path,
+        }

@@ -38,9 +38,11 @@ class BasePlay:
         return self.session_dir
 
     def take_screenshot(self, page, url):
+        logger.info(f"Taking screenshot from {url}...")
         temp_file = NamedTemporaryFile(suffix=".png", delete=False)
         page.goto(url)
         page.screenshot(full_page=True, path=temp_file.name)
+        logger.info("Done!")
         return temp_file.name
 
     def pre_run(self):
@@ -63,15 +65,4 @@ class BasePlay:
             logger.error(str(exc))
 
         output = self.post_run(output)
-        logger.info(f"Taking screenshots of {output['entry_url']}...")
-        with sync_playwright() as p:
-            browser = p.firefox.launch_persistent_context(
-                self.get_session_dir(),
-                headless=self.headless
-            )
-            page = browser.new_page()
-            output["entry_screenshot_path"] = self.take_screenshot(page, output["entry_url"])
-            for ad_item in output["ad_items"]:
-                logger.info(f"Taking screenshots of {ad_item['ad_url']}...")
-                ad_item["screenshot_path"] = self.take_screenshot(page, ad_item["ad_url"])
         return output

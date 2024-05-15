@@ -83,18 +83,17 @@ if __name__ == "__main__":
         ads = []
         for ad_item in result["ad_items"]:
             logger.info(f"Uploading AD {ad_item['ad_title']} screenshot")
-            ad_screenshot_url = upload_file(
-                ad_item["screenshot_path"],
-                f"{now()}_{slugify(ad_item['ad_url'])}",
-                type_="ads",
-            )
+            # ad_screenshot_url = upload_file(
+            #     ad_item["screenshot_path"],
+            #     f"{now()}_{slugify(ad_item['ad_url'])}",
+            #     type_="ads",
+            # )
             ads.append(
                 Advertisement(
                     entry=entry,
                     title=ad_item["ad_title"],
                     url=ad_item["ad_url"],
                     thumbnail=ad_item["thumbnail_url"],
-                    screenshot=ad_screenshot_url,
                     tag=ad_item["tag"],
                 )
             )
