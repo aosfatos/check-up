@@ -7,4 +7,4 @@ def now():
 
 def folder_date():
     n = datetime.datetime.now()
-    return f"{now.year}/{n.month}/{n.day}"
+    return f"{n.year}/{n.month}/{n.day}"
