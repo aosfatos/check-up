@@ -115,3 +115,4 @@ def create_instance(session, model, **kwargs):
     instance = model(**kwargs)
     session.add(instance)
     session.commit()
+    return instance
