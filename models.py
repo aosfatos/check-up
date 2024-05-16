@@ -1,6 +1,7 @@
 import datetime
 from typing import List
 
+from slugify import slugify
 from sqlalchemy import (
     Column,
     DateTime,
@@ -11,6 +12,8 @@ from sqlalchemy import (
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy_utils import URLType
+
+from storage import upload_file
 
 
 Base = declarative_base()
@@ -49,12 +52,15 @@ class Entry(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     portal_id: Mapped[int] = mapped_column(ForeignKey("portal.id"))
     title = Column(String, nullable=False)
-    url = Column(URLType, unique=True, nullable=False)
+    url = Column(URLType, nullable=False)
     screenshot = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
     portal: Mapped["Portal"] = relationship(back_populates="entries")
     ads: Mapped[List["Advertisement"]] = relationship(back_populates="entry")
+
+    def save_screenshot(self, file_path):
+        upload_file(file_path, f"entries/{folder_date()}/{now()}_{slugify(self.url)}.png")
 
     def __repr__(self):
         return f"{self.portal.name}: {self.url} - ({self.created_at})"
@@ -78,6 +84,15 @@ class Advertisement(Base):
         return f"{self.url}: ({self.entry.url})"
 
 
+def now():
+    return datetime.now().strftime("H%M%S")
+
+
+def folder_date():
+    n = datetime.now()
+    return f"{now.year}/{n.month}/{n.day}"
+
+
 def get_or_create(session, model, defaults=None, **kwargs):
     instance = session.query(model).filter_by(**kwargs).one_or_none()
     if instance:
@@ -94,3 +109,9 @@ def get_or_create(session, model, defaults=None, **kwargs):
             return instance, False
         else:
             return instance, True
+
+
+def create_instance(session, model, **kwargs):
+    instance = model(**kwargs)
+    session.add(instance)
+    session.commit()
