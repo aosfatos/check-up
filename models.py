@@ -60,8 +60,10 @@ class Entry(Base):
     portal: Mapped["Portal"] = relationship(back_populates="entries")
     ads: Mapped[List["Advertisement"]] = relationship(back_populates="entry")
 
-    def save_screenshot(self, file_path):
-        upload_file(file_path, f"entries/{folder_date()}/{now()}_{slugify(self.url)}.png")
+    def save_screenshot(self, session, file_path):
+        url = upload_file(file_path, f"entries/{folder_date()}/{now()}_{slugify(self.url)}.png")
+        self.screenshot = url
+        session.commit()
 
     def __repr__(self):
         return f"{self.portal.name}: {self.url} - ({self.created_at})"

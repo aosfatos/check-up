@@ -29,7 +29,7 @@ if __name__ == "__main__":
             url=result["entry_url"],
             title=result["entry_title"],
         )
-        entry.save_screenshot(result["entry_screenshot_path"])
+        entry.save_screenshot(session, result["entry_screenshot_path"])
         ads = []
         for ad_item in result["ad_items"]:
             logger.info(f"Uploading AD {ad_item['ad_title']} screenshot")
