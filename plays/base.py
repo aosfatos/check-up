@@ -1,3 +1,4 @@
+import shutil
 from tempfile import NamedTemporaryFile
 
 from loguru import logger
@@ -65,6 +66,12 @@ class BasePlay:
         logger.info("Done!")
         return ad_items
 
+    def remove_session(self):
+        try:
+            shutil.rmtree(self.session_dir)
+        except Exception:
+            logger.error(f"Error deleting session dir: '{self.session_dir}'")
+
     def pre_run(self):
         raise NotImplementedError()
 
@@ -77,12 +84,22 @@ class BasePlay:
     def execute(self):
         output = None
         self.pre_run()
+        retries = 2
         # TODO: retry
-        try:
-            output = self.run()
-            logger.info(f"{self.name.capitalize()}: found {len(output['ad_items'])} items.")
-        except PlayWrightTimeoutError as exc:
-            logger.error(str(exc))
+        while output is None and retries > 0:
+            try:
+                output = self.run()
+                logger.info(f"{self.name.capitalize()}: found {len(output['ad_items'])} items.")
+            except PlayWrightTimeoutError as exc:
+                logger.error(str(exc))
+
+            if output is None:
+                logger.warning(
+                    f"No ADs were found with '{self.name}'. Trying again. Remaining {retries}"
+                )
+                # Lets remove session and login again. It sometimes workds
+                self.remove_session()
+                retries -= 1
 
         output = self.post_run(output)
         if output is not None:
