@@ -5,7 +5,6 @@ from sqlalchemy.orm import Session
 
 from plays.base import BasePlay
 from models import Advertisement, Entry, Portal, create_instance
-from storage import upload_file
 
 
 if __name__ == "__main__":
@@ -34,7 +33,7 @@ if __name__ == "__main__":
         ads = []
         for ad_item in result["ad_items"]:
             logger.info(f"Saving AD {ad_item['ad_title']}")
-            ad_screenshot_url = Advertisement.upload_file(
+            ad_screenshot_url = Advertisement.save_screenshot(
                 ad_item["screenshot_path"],
                 ad_item["ad_url"],
             )

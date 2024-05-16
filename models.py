@@ -61,7 +61,10 @@ class Entry(Base):
     ads: Mapped[List["Advertisement"]] = relationship(back_populates="entry")
 
     def save_screenshot(self, session, file_path):
-        url = upload_file(file_path, f"entries/{folder_date()}/{now()}_{slugify(self.url)}.png")
+        url = upload_file(
+            file_path,
+            f"entries/{folder_date()}/{now()}_{slugify(self.url)[:100]}.png"
+        )
         self.screenshot = url
         session.commit()
 
@@ -84,10 +87,10 @@ class Advertisement(Base):
     entry: Mapped["Entry"] = relationship(back_populates="ads")
 
     @classmethod
-    def upload_file(cls, file_path, url):
+    def save_screenshot(cls, file_path, url):
         return upload_file(
             file_path,
-            f"ads/{folder_date()}/{now()}_{slugify(url)}.png"
+            f"ads/{folder_date()}/{now()}_{slugify(url[:100])}.png"
         )
 
     def __repr__(self):
