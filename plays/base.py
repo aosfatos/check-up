@@ -69,7 +69,7 @@ class BasePlay:
 
     def remove_session(self):
         try:
-            shutil.rmtree(self.session_dir)
+            shutil.rmtree(self.get_session_dir())
         except Exception:
             logger.error(f"Error deleting session dir: '{self.session_dir}'")
 
@@ -99,7 +99,8 @@ class BasePlay:
 
             if self.not_enough_items(output):
                 logger.warning(
-                    f"No ADs were found with '{self.name}'. Trying again. Remaining {retries}"
+                    f"Not enough ADs were found with '{self.name}'."
+                    f" Trying again. Remaining {retries}"
                 )
                 # Lets remove session and login again. It sometimes workds
                 self.remove_session()
