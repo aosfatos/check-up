@@ -9,6 +9,7 @@ from plays.exceptions import ScrapperNotFoundError
 
 class BasePlay:
     name = "base"
+    n_expected_ads = 0
 
     def __init__(self, url, session_dir=None, wait_time=3, headless=True, retries=3):
         self.url = url
@@ -72,6 +73,9 @@ class BasePlay:
         except Exception:
             logger.error(f"Error deleting session dir: '{self.session_dir}'")
 
+    def not_enough_items(self, output):
+        return output is None or len(output["ad_items"]) < self.n_expected_ads
+
     def pre_run(self):
         raise NotImplementedError()
 
@@ -86,14 +90,14 @@ class BasePlay:
         self.pre_run()
         retries = 2
         # TODO: retry
-        while output is None and retries > 0:
+        while self.not_enough_items(output) and retries > 0:
             try:
                 output = self.run()
                 logger.info(f"{self.name.capitalize()}: found {len(output['ad_items'])} items.")
             except PlayWrightTimeoutError as exc:
                 logger.error(str(exc))
 
-            if output is None:
+            if self.not_enough_items(output):
                 logger.warning(
                     f"No ADs were found with '{self.name}'. Trying again. Remaining {retries}"
                 )

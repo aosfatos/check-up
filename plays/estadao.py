@@ -10,6 +10,7 @@ from plays.utils import get_or_none
 
 class EstadaoPlay(BasePlay):
     name = "estadao"
+    n_expected_ads = 9
 
     @classmethod
     def match(cls, url):

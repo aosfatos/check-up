@@ -13,7 +13,7 @@ if __name__ == "__main__":
     engine = create_engine(config("DATABASE_URL"))
     session = Session(engine)
     for url in urls:
-        scrapper = BasePlay.get_scrapper(url, headless=True)
+        scrapper = BasePlay.get_scrapper(url, headless=False)
         result = scrapper.execute()
         if result is None:
             continue

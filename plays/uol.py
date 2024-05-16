@@ -9,6 +9,7 @@ from plays.utils import get_or_none
 
 class UOLPlay(BasePlay):
     name = "uol"
+    n_expected_ads = 4
 
     @classmethod
     def match(cls, url):

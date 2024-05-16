@@ -10,6 +10,7 @@ from plays.utils import get_or_none
 
 class FolhaPlay(BasePlay):
     name = "folha"
+    n_expected_ads = 15
 
     @classmethod
     def match(cls, url):

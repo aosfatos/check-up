@@ -9,6 +9,7 @@ from plays.utils import get_or_none
 
 class VejaPlay(BasePlay):
     name = "veja"
+    n_expected_ads = 15
 
     @classmethod
     def match(cls, url):
