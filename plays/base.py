@@ -46,6 +46,25 @@ class BasePlay:
         logger.info("Done!")
         return temp_file.name
 
+    def take_ads_screenshot(self, ad_items):
+        logger.info("Taking ADs screenshots")
+        with sync_playwright() as p:
+            browser = p.firefox.launch_persistent_context(
+                self.get_session_dir(),
+                headless=self.headless
+            )
+            page = browser.new_page()
+            for ad in ad_items:
+                try:
+                    screenshot_path = self.take_screenshot(page, ad["ad_url"], goto=True)
+                except Exception:
+                    screenshot_path = None
+                finally:
+                    ad["screenshot_path"] = screenshot_path
+
+        logger.info("Done!")
+        return ad_items
+
     def pre_run(self):
         raise NotImplementedError()
 
@@ -66,4 +85,6 @@ class BasePlay:
             logger.error(str(exc))
 
         output = self.post_run(output)
+        if output is not None:
+            output["ad_items"] = self.take_ads_screenshot(output["ad_items"])
         return output

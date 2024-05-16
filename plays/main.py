@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from plays.base import BasePlay
 from models import Advertisement, Entry, Portal, create_instance
+from storage import upload_file
 
 
 if __name__ == "__main__":
@@ -32,18 +33,18 @@ if __name__ == "__main__":
         entry.save_screenshot(session, result["entry_screenshot_path"])
         ads = []
         for ad_item in result["ad_items"]:
-            logger.info(f"Uploading AD {ad_item['ad_title']} screenshot")
-            # ad_screenshot_url = upload_file(
-            #     ad_item["screenshot_path"],
-            #     f"{now()}_{slugify(ad_item['ad_url'])}",
-            #     type_="ads",
-            # )
+            logger.info(f"Saving AD {ad_item['ad_title']}")
+            ad_screenshot_url = Advertisement.upload_file(
+                ad_item["screenshot_path"],
+                ad_item["ad_url"],
+            )
             ads.append(
                 Advertisement(
                     entry=entry,
                     title=ad_item["ad_title"],
                     url=ad_item["ad_url"],
                     thumbnail=ad_item["thumbnail_url"],
+                    screenshot=ad_screenshot_url,
                     tag=ad_item["tag"],
                 )
             )

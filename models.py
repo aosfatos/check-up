@@ -83,6 +83,13 @@ class Advertisement(Base):
 
     entry: Mapped["Entry"] = relationship(back_populates="ads")
 
+    @classmethod
+    def upload_file(cls, file_path, url)
+        return upload_file(
+            file_path,
+            f"ads/{folder_date()}/{now()}_{slugify(url)}.png"
+        )
+
     def __repr__(self):
         return f"{self.url}: ({self.entry.url})"
 
