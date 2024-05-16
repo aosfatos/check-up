@@ -13,6 +13,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy_utils import URLType
 
+from utils.date import now, folder_date
 from storage import upload_file
 
 
@@ -82,15 +83,6 @@ class Advertisement(Base):
 
     def __repr__(self):
         return f"{self.url}: ({self.entry.url})"
-
-
-def now():
-    return datetime.now().strftime("H%M%S")
-
-
-def folder_date():
-    n = datetime.now()
-    return f"{now.year}/{n.month}/{n.day}"
 
 
 def get_or_create(session, model, defaults=None, **kwargs):
