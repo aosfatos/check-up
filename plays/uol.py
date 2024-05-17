@@ -28,7 +28,7 @@ class UOLPlay(BasePlay):
                 r'image: {\s*default: "(https://tpc\.googlesyndication\.com/simgad/[\d?]+)"',
                 html_content,
             ),
-            "ad_title": get_or_none(r'<div class="ad-description">(.*?)\n?', html_content),
+            "ad_title": get_or_none(r'<div class="ad-description">(.*?)</div>', html_content),
             "tag": get_or_none(r'<div class="ad-label-footer">(.*?)</div>', html_content),
             "ad_url": get_or_none(
                 r'link: {\s*[^}]*\bdefault\b[^}].*?"([^"]+)"',
