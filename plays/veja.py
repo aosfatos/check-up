@@ -1,7 +1,8 @@
 import time
 
+from decouple import config
 from loguru import logger
-from playwright.sync_api import TimeoutError as PlaywirghtTimeoutError, sync_playwright
+from playwright.sync_api import TimeoutError as PlaywrightTimeoutError, sync_playwright
 
 from plays.base import BasePlay
 from plays.utils import get_or_none
@@ -14,6 +15,29 @@ class VejaPlay(BasePlay):
     @classmethod
     def match(cls, url):
         return "veja.abril.com.br" in url
+
+    def login(self):
+        with sync_playwright() as p:
+            logger.info("Launching Browser...")
+            browser = p.firefox.launch_persistent_context(
+                self.get_session_dir(),
+                headless=self.headless
+            )
+            logger.info("Done!")
+            page = browser.new_page()
+            login_url = "https://veja.abril.com.br/login/"
+            logger.info(f"Opening URL {login_url}...")
+            page.goto(login_url)
+            time.sleep(self.wait_time)
+            logger.info(f"Logging in into '{login_url}'...")
+            page.locator("#signin-email").fill(config("VEJA_USERNAME"))
+            page.locator("#signin-password").fill(config("VEJA_PASSWORD"))
+            page.get_by_role("button", name="ENTRAR").click()
+            time.sleep(self.wait_time)
+            time.sleep(self.wait_time)
+            logger.info("Login finished")
+            logger.info("Closing browser")
+            browser.close()
 
     def find_items(self, html_content, ad_panel_content, thumbnail_content):
         return {
@@ -43,13 +67,16 @@ class VejaPlay(BasePlay):
                 href = ele.locator("a").first.get_attribute("href")
                 logger.info(f"Got '{href}'")
                 hrefs.append(href)
-            except PlaywirghtTimeoutError:
+            except PlaywrightTimeoutError:
                 logger.error(f"Error getting href from {ele}")
 
         return hrefs
 
     def pre_run(self):
-        pass
+        try:
+            self.login()
+        except PlaywrightTimeoutError:
+            logger.warning("Timeout trying to log in. Probably already logged in")
 
     def run(self):
         with sync_playwright() as p:
@@ -87,7 +114,7 @@ class VejaPlay(BasePlay):
                     ad_items.append(
                         self.find_items(page_content, element_content, thumbnail_content)
                     )
-                except PlaywirghtTimeoutError:
+                except PlaywrightTimeoutError:
                     logger.error(f"Error getting content from '{href}'")
 
             logger.info("Done")

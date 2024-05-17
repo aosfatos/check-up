@@ -14,7 +14,12 @@ class UOLPlay(BasePlay):
     @classmethod
     def match(cls, url):
         # TODO: use regex in this matcher
-        for domain in ["noticias.uol.com.br", "www.uol.com.br", "educacao.uol.com.br"]:
+        for domain in [
+            "noticias.uol.com.br",
+            "www.uol.com.br",
+            "educacao.uol.com.br",
+            "economia.uol.com.br",
+        ]:
             if domain in url:
                 return True
 
