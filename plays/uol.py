@@ -28,7 +28,7 @@ class UOLPlay(BasePlay):
                 r'image: {\s*default: "(https://tpc\.googlesyndication\.com/simgad/[\d?]+)"',
                 html_content,
             ),
-            "ad_title": get_or_none(r'<div class="ad-description">(.*?)</div>', html_content),
+            "ad_title": get_or_none(r'<div class="ad-description">(.*?)\n?', html_content),
             "tag": get_or_none(r'<div class="ad-label-footer">(.*?)</div>', html_content),
             "ad_url": get_or_none(
                 r'link: {\s*[^}]*\bdefault\b[^}].*?"([^"]+)"',
@@ -71,7 +71,7 @@ class UOLPlay(BasePlay):
             page.get_by_text("As mais lidas agora").scroll_into_view_if_needed()
             time.sleep(self.wait_time)
             ad_items = self.get_iframe_items(
-                page.locator("[id^='google_ads_iframe_\\/8804\\/uol'][id$='_9']")
+                page.locator(".type-main").locator("//iframe")
             )
             most_read_items = self.get_most_read_items(page.locator(".jupiter-most-read-now"))
 

@@ -85,10 +85,9 @@ class BasePlay:
     def run(self):
         raise NotImplementedError()
 
-    def execute(self):
+    def execute(self, retries=2):
         output = None
         self.pre_run()
-        retries = 2
         # TODO: retry
         while self.not_enough_items(output) and retries > 0:
             try:
@@ -98,13 +97,13 @@ class BasePlay:
                 logger.error(str(exc))
 
             if self.not_enough_items(output):
+                retries -= 1
                 logger.warning(
                     f"Not enough ADs were found with '{self.name}'."
                     f" Trying again. Remaining {retries}"
                 )
-                # Lets remove session and login again. It sometimes workds
+                # Lets remove session and login again. It sometimes works
                 self.remove_session()
-                retries -= 1
 
         output = self.post_run(output)
         if output is not None:
