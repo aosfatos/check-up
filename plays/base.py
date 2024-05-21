@@ -33,6 +33,10 @@ class BasePlay:
 
         raise ScrapperNotFoundError(f"No scrapper was found for url '{url}'")
 
+    @property
+    def proxy(self):
+        return None
+
     def get_session_dir(self):
         if self.session_dir is None:
             return f"/tmp/{self.name}_session"
@@ -48,13 +52,23 @@ class BasePlay:
         logger.info("Done!")
         return temp_file.name
 
-    def take_ads_screenshot(self, ad_items):
-        logger.info("Taking ADs screenshots")
-        with sync_playwright() as p:
-            browser = p.firefox.launch_persistent_context(
+    def launch_browser(self, playwright_obj):
+        logger.info(f"[{self.name}] Launching browser...'")
+        if self.proxy is not None:
+            return playwright_obj.firefox.launch_persistent_context(
                 self.get_session_dir(),
-                headless=self.headless
+                headless=self.headless,
+                proxy=self.proxy,
             )
+        return playwright_obj.firefox.launch_persistent_context(
+            self.get_session_dir(),
+            headless=self.headless
+        )
+
+    def take_ads_screenshot(self, ad_items):
+        logger.info(f"[{self.name}] Taking ADs screenshots")
+        with sync_playwright() as p:
+            browser = self.launch_browser(p)
             page = browser.new_page()
             for ad in ad_items:
                 try:
@@ -71,7 +85,7 @@ class BasePlay:
         try:
             shutil.rmtree(self.get_session_dir())
         except Exception:
-            logger.error(f"Error deleting session dir: '{self.session_dir}'")
+            logger.error(f"[{self.name}] Error deleting session dir: '{self.session_dir}'")
 
     def not_enough_items(self, output):
         return output is None or len(output["ad_items"]) < self.n_expected_ads
@@ -99,7 +113,7 @@ class BasePlay:
             if self.not_enough_items(output):
                 retries -= 1
                 logger.warning(
-                    f"Not enough ADs were found with '{self.name}'."
+                    f"[{self.name}] Not enough ADs were found with '{self.name}'."
                     f" Trying again. Remaining {retries}"
                 )
                 # Lets remove session and login again. It sometimes works

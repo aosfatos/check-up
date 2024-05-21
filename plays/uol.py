@@ -68,9 +68,7 @@ class UOLPlay(BasePlay):
 
     def run(self):
         with sync_playwright() as p:
-            logger.info("Launching Browser...")
-            browser = p.firefox.launch(headless=self.headless)
-            logger.info("Done!")
+            browser = self.launch_browser(p)
             page = browser.new_page()
             logger.info(f"Opening URL '{self.url}'...")
             page.goto(self.url, timeout=60_000)

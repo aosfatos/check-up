@@ -18,11 +18,7 @@ class EstadaoPlay(BasePlay):
 
     def login(self):
         with sync_playwright() as p:
-            logger.info("Launching Browser...")
-            browser = p.firefox.launch_persistent_context(
-                self.get_session_dir(),
-                headless=self.headless,
-            )
+            browser = self.launch_browser(p)
             logger.info("Done!")
             page = browser.new_page()
             url = "https://acesso.estadao.com.br/login/"
@@ -65,12 +61,7 @@ class EstadaoPlay(BasePlay):
 
     def run(self):
         with sync_playwright() as p:
-            logger.info("Launching Browser...")
-            browser = p.firefox.launch_persistent_context(
-                self.get_session_dir(),
-                headless=self.headless
-            )
-            logger.info("Done!")
+            browser = self.launch_browser(p)
             page = browser.new_page()
             logger.info(f"Opening URL '{self.url}'...")
             page.goto(self.url)
