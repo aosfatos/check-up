@@ -30,6 +30,7 @@ if __name__ == "__main__":
             title=result["entry_title"],
         )
         entry.save_screenshot(session, result["entry_screenshot_path"])
+        logger.info(f"Saved entry with id {entry.id}")
         ads = []
         for ad_item in result["ad_items"]:
             logger.info(f"Saving AD {ad_item['ad_title']}")
