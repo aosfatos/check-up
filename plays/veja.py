@@ -66,7 +66,8 @@ class VejaPlay(BasePlay):
             browser = self.launch_browser(p)
             page = browser.new_page()
             logger.info(f"Opening URL '{self.url}'...")
-            page.goto(self.url)
+            # Increase timeout to account for potential delays introduced by the proxy
+            page.goto(self.url, timeout=180_000)  # 180s
             logger.info("Searching for ads...")
             time.sleep(self.wait_time)
             page.locator(".mgbox").scroll_into_view_if_needed()
