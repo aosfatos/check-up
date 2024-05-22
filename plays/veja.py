@@ -40,7 +40,7 @@ class VejaPlay(BasePlay):
             "ad_title": get_or_none(r'<h1 class="title">(.*?)</h1>', html_content),
             "ad_url": get_or_none(r'href="(.*?)"', element_content),
             "thumbnail_url": get_or_none(r'data-src="(.*?)"', element_content),
-            "ad_tag": None,
+            "tag": None,
         }
 
     def parse_elements(self, elements):
