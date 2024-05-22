@@ -100,7 +100,7 @@ class VejaPlay(BasePlay):
                 page_content = page.content()
                 element_content = element.inner_html()
                 try:
-                    page.locator(".news__image_big").scroll_into_view_if_needed()
+                    page.locator(".news__image_big").scroll_into_view_if_needed(timeout=60_000)
                     ad_items.append(self.find_items_mgid_page(page_content, element_content))
                 except PlaywrightTimeoutError:
                     ad_items.append(self.find_items(page_content, element_content))
