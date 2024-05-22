@@ -24,15 +24,23 @@ class VejaPlay(BasePlay):
             "password": config("OXYLABS_PASSWORD"),
         }
 
-    def find_items(self, html_content, ad_panel_content, thumbnail_content):
+    def find_items_mgid_page(self, html_content, element_content):
         return {
             "ad_title": get_or_none(r"<title>(.*?)</title>", html_content),
             "ad_url": get_or_none(r'</script>\n<a href="(.*?)"', html_content),
-            "thumbnail_url": get_or_none(r'img src="(.*?)"', thumbnail_content),
+            "thumbnail_url": get_or_none(r'data-src="(.*?)"', element_content),
             "tag": get_or_none(
                 r'<div class="mcdomain"><a[^>]+>(.*?)<\/a><\/div>',
-                ad_panel_content
+                element_content
             ),
+        }
+
+    def find_items(self, html_content, element_content):
+        return {
+            "ad_title": get_or_none(r'<h1 class="title">(.*?)</h1>', html_content),
+            "ad_url": get_or_none(r'href="(.*?)"', element_content),
+            "thumbnail_url": get_or_none(r'data-src="(.*?)"', element_content),
+            "ad_tag": None,
         }
 
     def parse_elements(self, elements):
@@ -40,6 +48,8 @@ class VejaPlay(BasePlay):
         elements_row = []
         for i in range(n_elements):
             current_element = elements.nth(i)
+            if current_element.inner_text() == "":
+                continue
             elements_row.append(current_element)
 
         return elements_row
@@ -83,19 +93,17 @@ class VejaPlay(BasePlay):
             page = browser.new_page()
             ad_items = []
             for element, href in zip(elements, hrefs):
+                logger.info(f"Opening AD URL '{href}'")
+                page.goto(href, timeout=60_000)
+                time.sleep(self.wait_time)
+                logger.info(f"Getting page content '{href}'")
+                page_content = page.content()
+                element_content = element.inner_html()
                 try:
-                    logger.info(f"Opening AD URL '{href}'")
-                    page.goto(href)
-                    time.sleep(self.wait_time)
-                    logger.info(f"Getting page content '{href}'")
-                    page_content = page.content()
-                    thumbnail_content = page.locator(".news__image_big").inner_html()
-                    element_content = element.inner_html()
-                    ad_items.append(
-                        self.find_items(page_content, element_content, thumbnail_content)
-                    )
+                    page.locator(".news__image_big")
+                    ad_items.append(self.find_items_mgid_page(page_content, element_content))
                 except PlaywrightTimeoutError:
-                    logger.error(f"Error getting content from '{href}'")
+                    ad_items.append(self.find_items(page_content, element_content))
 
             logger.info("Done")
             return {
