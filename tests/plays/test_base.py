@@ -2,13 +2,16 @@ import pytest
 from freezegun import freeze_time
 
 from plays.base import BasePlay
+from plays import (
+    EstadaoPlay,
+    FolhaPlay,
+    GloboPlay,
+    MetropolesPlay,
+    VejaPlay,
+    TerraPlay,
+    UOLPlay
+)
 from plays.exceptions import ScrapperNotFoundError
-from plays.estadao import EstadaoPlay
-from plays.folha import FolhaPlay
-from plays.globo import GloboPlay
-from plays.veja import VejaPlay
-from plays.terra import TerraPlay
-from plays.uol import UOLPlay
 
 
 class TestBasePlay:
@@ -58,6 +61,14 @@ class TestBasePlay:
         scrapper = BasePlay.get_scrapper(url)
 
         assert isinstance(scrapper, TerraPlay)
+        assert scrapper.url == url
+
+    def test_return_correct_scrapper_metropoles(self):
+        url = "https://www.metropoles.com/brasil/entry-slug"
+
+        scrapper = BasePlay.get_scrapper(url)
+
+        assert isinstance(scrapper, MetropolesPlay)
         assert scrapper.url == url
 
     def test_raise_error_if_no_scrapper_is_found(self):

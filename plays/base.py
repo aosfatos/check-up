@@ -1,4 +1,5 @@
 import shutil
+import time
 from tempfile import NamedTemporaryFile
 from typing import List
 
@@ -52,7 +53,12 @@ class BasePlay:
         logger.info("Done!")
         return temp_file.name
 
-    def launch_browser(self, playwright_obj):
+    def scroll_down(self, page, n, amount=300, wait_time=1):
+        for _ in range(n):
+            page.mouse.wheel(0, amount)
+            time.sleep(wait_time)
+
+    def launch_browser(self, playwright_obj, *args, **kwargs):
         logger.info(f"[{self.name}] Launching browser...'")
         if self.proxy is not None:
             logger.info(f"[{self.name}] Using proxy")
@@ -60,10 +66,14 @@ class BasePlay:
                 self.get_session_dir(),
                 headless=self.headless,
                 proxy=self.proxy,
+                *args,
+                **kwargs,
             )
         return playwright_obj.firefox.launch_persistent_context(
             self.get_session_dir(),
-            headless=self.headless
+            headless=self.headless,
+            *args,
+            **kwargs,
         )
 
     def take_ads_screenshot(self, ad_items: List[AdItem]):

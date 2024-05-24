@@ -8,13 +8,13 @@ from plays.items import AdItem, EntryItem
 from plays.utils import get_or_none
 
 
-class TerraPlay(BasePlay):
-    name = "terra"
+class MetropolesPlay(BasePlay):
+    name = "metrople"
     n_expected_ads = 10
 
     @classmethod
     def match(cls, url):
-        return "terra.com.br" in url
+        return "metropoles.com" in url
 
     def find_items(self, html_content) -> AdItem:
         return AdItem(
@@ -29,24 +29,28 @@ class TerraPlay(BasePlay):
 
     def run(self) -> EntryItem:
         with sync_playwright() as p:
-            browser = self.launch_browser(p)
+            browser = self.launch_browser(p, viewport={"width": 1920, "height": 1080})
             page = browser.new_page()
             logger.info(f"Opening URL {self.url}...")
             page.goto(self.url, timeout=180_000)
             logger.info("Searching for ads...")
             page.locator("#taboola-below-article-thumbnails").scroll_into_view_if_needed()
+            time.sleep(self.wait_time * 2)
 
             entry_screenshot_path = self.take_screenshot(page, self.url, goto=False)
-            entry_title = page.locator("title").inner_text()
-            time.sleep(self.wait_time * 2)
+            entry_title = page.locator("//h1").first.inner_text()
+
+            self.scroll_down(page, 20, amount=500)
 
             elements = page.locator(".videoCube")
             ad_items = []
             visible_elements = []
+            time.sleep(self.wait_time)
             for i in range(elements.count()):
                 element = elements.nth(i)
                 if not element.is_visible():
                     continue
+
                 visible_elements.append(element)
                 content = element.inner_html()
                 ad_item = self.find_items(content)
