@@ -7,6 +7,7 @@ from plays.estadao import EstadaoPlay
 from plays.folha import FolhaPlay
 from plays.globo import GloboPlay
 from plays.veja import VejaPlay
+from plays.terra import TerraPlay
 from plays.uol import UOLPlay
 
 
@@ -49,6 +50,14 @@ class TestBasePlay:
         scrapper = BasePlay.get_scrapper(url)
 
         assert isinstance(scrapper, GloboPlay)
+        assert scrapper.url == url
+
+    def test_return_correct_scrapper_terra(self):
+        url = "https://www.terra.com.br/esportes/futebol/internacional/entry-slug"
+
+        scrapper = BasePlay.get_scrapper(url)
+
+        assert isinstance(scrapper, TerraPlay)
         assert scrapper.url == url
 
     def test_raise_error_if_no_scrapper_is_found(self):
