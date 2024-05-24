@@ -3,6 +3,7 @@ from freezegun import freeze_time
 
 from plays.base import BasePlay
 from plays import (
+    ClicRBSPlay,
     EstadaoPlay,
     FolhaPlay,
     GloboPlay,
@@ -69,6 +70,14 @@ class TestBasePlay:
         scrapper = BasePlay.get_scrapper(url)
 
         assert isinstance(scrapper, MetropolesPlay)
+        assert scrapper.url == url
+
+    def test_return_correct_scrapper_clic_rbs(self):
+        url = "https://gauchazh.clicrbs.com.br/ambiente/noticia/entry-slug"
+
+        scrapper = BasePlay.get_scrapper(url)
+
+        assert isinstance(scrapper, ClicRBSPlay)
         assert scrapper.url == url
 
     def test_raise_error_if_no_scrapper_is_found(self):
