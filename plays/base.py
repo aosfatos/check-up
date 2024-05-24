@@ -26,9 +26,7 @@ class BasePlay:
 
     @classmethod
     def get_scrapper(cls, url, *args, **kwargs):
-        from plays import EstadaoPlay, FolhaPlay, VejaPlay, UOLPlay
-
-        scrappers = [EstadaoPlay, FolhaPlay, VejaPlay, UOLPlay]
+        scrappers = cls.__subclasses__()
         for scrapper in scrappers:
             if scrapper.match(url):
                 return scrapper(url, *args, **kwargs)
@@ -57,6 +55,7 @@ class BasePlay:
     def launch_browser(self, playwright_obj):
         logger.info(f"[{self.name}] Launching browser...'")
         if self.proxy is not None:
+            logger.info(f"[{self.name}] Using proxy")
             return playwright_obj.firefox.launch_persistent_context(
                 self.get_session_dir(),
                 headless=self.headless,

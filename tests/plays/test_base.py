@@ -5,6 +5,7 @@ from plays.base import BasePlay
 from plays.exceptions import ScrapperNotFoundError
 from plays.estadao import EstadaoPlay
 from plays.folha import FolhaPlay
+from plays.globo import GloboPlay
 from plays.veja import VejaPlay
 from plays.uol import UOLPlay
 
@@ -40,6 +41,14 @@ class TestBasePlay:
         scrapper = BasePlay.get_scrapper(url)
 
         assert isinstance(scrapper, UOLPlay)
+        assert scrapper.url == url
+
+    def test_return_correct_scrapper_globo(self):
+        url = "https://oglobo.globo.com/economia/noticia/entry-slug"
+
+        scrapper = BasePlay.get_scrapper(url)
+
+        assert isinstance(scrapper, GloboPlay)
         assert scrapper.url == url
 
     def test_raise_error_if_no_scrapper_is_found(self):
