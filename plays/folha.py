@@ -5,12 +5,13 @@ from loguru import logger
 from playwright.sync_api import TimeoutError as PlayWrightTimeoutError, sync_playwright
 
 from plays.base import BasePlay
+from plays.items import AdItem, EntryItem
 from plays.utils import get_or_none
 
 
 class FolhaPlay(BasePlay):
     name = "folha"
-    n_expected_ads = 15
+    n_expected_ads = 12
 
     @classmethod
     def match(cls, url):
@@ -35,13 +36,13 @@ class FolhaPlay(BasePlay):
             logger.info("Closing browser")
             browser.close()
 
-    def find_items(self, html_content):
-        return {
-            "ad_title": get_or_none(r'title="(.*?)"', html_content),
-            "ad_url": get_or_none(r'href="(.*?)"', html_content),
-            "thumbnail_url": get_or_none(r'url\(&quot;(.*?)&quot;\)', html_content),
-            "tag": get_or_none(r'<span class="branding-inner".*?>(.*?)<\/span>', html_content),
-        }
+    def find_items(self, html_content) -> AdItem:
+        return AdItem(
+            title=get_or_none(r'title="(.*?)"', html_content),
+            url=get_or_none(r'href="(.*?)"', html_content),
+            thumbnail_url=get_or_none(r'url\(&quot;(.*?)&quot;\)', html_content),
+            tag=get_or_none(r'<span class="branding-inner".*?>(.*?)<\/span>', html_content),
+        )
 
     def pre_run(self):
         try:
@@ -49,7 +50,7 @@ class FolhaPlay(BasePlay):
         except PlayWrightTimeoutError:
             logger.warning("Timeout trying to log in. Probably already logged in")
 
-    def run(self):
+    def run(self) -> EntryItem:
         with sync_playwright() as p:
             browser = self.launch_browser(p)
             page = browser.new_page()
@@ -76,9 +77,9 @@ class FolhaPlay(BasePlay):
 
             logger.info("Done")
 
-        return {
-            "entry_title": entry_title,
-            "ad_items": ad_items,
-            "entry_url": self.url,
-            "entry_screenshot_path": entry_screenshot_path,
-        }
+        return EntryItem(
+            title=entry_title,
+            ads=ad_items,
+            url=self.url,
+            screenshot_path=entry_screenshot_path,
+        )

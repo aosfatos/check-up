@@ -2,9 +2,10 @@ import time
 
 from decouple import config
 from loguru import logger
-from playwright.sync_api import TimeoutError as PlayWrightTimeoutError, sync_playwright
+from playwright.sync_api import sync_playwright
 
 from plays.base import BasePlay
+from plays.items import AdItem, EntryItem
 from plays.utils import get_or_none
 
 
@@ -48,18 +49,18 @@ class EstadaoPlay(BasePlay):
 
         return objects
 
-    def find_items(self, html_content):
-        return {
-            "ad_title": get_or_none(r'title="(.*?)"', html_content),
-            "ad_url": get_or_none(r'href="(.*?)"', html_content),
-            "thumbnail_url": get_or_none(r'src="(.*?)"', html_content),
-            "tag": get_or_none(
+    def find_items(self, html_content) -> AdItem:
+        return AdItem(
+            title=get_or_none(r'title="(.*?)"', html_content),
+            url=get_or_none(r'href="(.*?)"', html_content),
+            thumbnail_url=get_or_none(r'src="(.*?)"', html_content),
+            tag=get_or_none(
                 r'<span class="ob-unit ob-rec-source" data-type="Source">(.*?)<\/span>',
                 html_content
             ),
-        }
+        )
 
-    def run(self):
+    def run(self) -> EntryItem:
         with sync_playwright() as p:
             browser = self.launch_browser(p)
             page = browser.new_page()
@@ -80,9 +81,9 @@ class EstadaoPlay(BasePlay):
             for obj in objects:
                 ad_items.append(self.find_items(obj))
 
-        return {
-            "entry_title": entry_title,
-            "ad_items": ad_items,
-            "entry_url": self.url,
-            "entry_screenshot_path": entry_screenshot_path,
-        }
+        return EntryItem(
+            title=entry_title,
+            url=self.url,
+            screenshot_path=entry_screenshot_path,
+            ads=ad_items,
+        )

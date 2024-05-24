@@ -1,9 +1,11 @@
 import shutil
 from tempfile import NamedTemporaryFile
+from typing import List
 
 from loguru import logger
 from playwright.sync_api import TimeoutError as PlayWrightTimeoutError, sync_playwright
 
+from plays.items import AdItem, EntryItem
 from plays.exceptions import ScrapperNotFoundError
 
 
@@ -65,18 +67,18 @@ class BasePlay:
             headless=self.headless
         )
 
-    def take_ads_screenshot(self, ad_items):
+    def take_ads_screenshot(self, ad_items: List[AdItem]):
         logger.info(f"[{self.name}] Taking ADs screenshots")
         with sync_playwright() as p:
             browser = self.launch_browser(p)
             page = browser.new_page()
             for ad in ad_items:
                 try:
-                    screenshot_path = self.take_screenshot(page, ad["ad_url"], goto=True)
+                    screenshot_path = self.take_screenshot(page, ad.url, goto=True)
                 except Exception:
                     screenshot_path = None
                 finally:
-                    ad["screenshot_path"] = screenshot_path
+                    ad.screenshot_path = screenshot_path
 
         logger.info("Done!")
         return ad_items
@@ -87,8 +89,8 @@ class BasePlay:
         except Exception:
             logger.error(f"[{self.name}] Error deleting session dir: '{self.session_dir}'")
 
-    def not_enough_items(self, output):
-        return output is None or len(output["ad_items"]) < self.n_expected_ads
+    def not_enough_items(self, entry_item: EntryItem):
+        return entry_item is None or len(entry_item.ads) < self.n_expected_ads
 
     def pre_run(self):
         raise NotImplementedError()
@@ -100,17 +102,17 @@ class BasePlay:
         raise NotImplementedError()
 
     def execute(self, retries=2):
-        output = None
+        entry_item = None
         self.pre_run()
         # TODO: retry
-        while self.not_enough_items(output) and retries > 0:
+        while self.not_enough_items(entry_item) and retries > 0:
             try:
-                output = self.run()
-                logger.info(f"{self.name.capitalize()}: found {len(output['ad_items'])} items.")
+                entry_item = self.run()
+                logger.info(f"{self.name.capitalize()}: found {len(entry_item.ads)} items.")
             except PlayWrightTimeoutError as exc:
                 logger.error(str(exc))
 
-            if self.not_enough_items(output):
+            if self.not_enough_items(entry_item):
                 retries -= 1
                 logger.warning(
                     f"[{self.name}] Not enough ADs were found with '{self.name}'."
@@ -119,7 +121,7 @@ class BasePlay:
                 # Lets remove session and login again. It sometimes works
                 self.remove_session()
 
-        output = self.post_run(output)
-        if output is not None:
-            output["ad_items"] = self.take_ads_screenshot(output["ad_items"])
-        return output
+        entry_item = self.post_run(entry_item)
+        if entry_item is not None:
+            entry_item.ads = self.take_ads_screenshot(entry_item.ads)
+        return entry_item

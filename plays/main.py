@@ -14,38 +14,38 @@ if __name__ == "__main__":
     session = Session(engine)
     for url in urls:
         scrapper = BasePlay.get_scrapper(url, headless=config("HEADLESS", cast=bool))
-        result = scrapper.execute()
-        if result is None:
+        entry_item = scrapper.execute()
+        if entry_item is None:
             continue
 
         # TODO: improve this query
         portal = session.query(Portal).filter_by(name=scrapper.name.capitalize()).one()
 
-        logger.info(f"Saving entry {result['entry_title']} on database")
+        logger.info(f"Saving entry {entry_item.title} on database")
         entry = create_instance(
             session,
             Entry,
             portal=portal,
-            url=result["entry_url"],
-            title=result["entry_title"],
+            url=entry_item.url,
+            title=entry_item.title,
         )
-        entry.save_screenshot(session, result["entry_screenshot_path"])
+        entry.save_screenshot(session, entry_item.screenshot_path)
         logger.info(f"Saved entry with id {entry.id}")
         ads = []
-        for ad_item in result["ad_items"]:
-            logger.info(f"Saving AD {ad_item['ad_title']}")
+        for ad_item in entry_item.ads:
+            logger.info(f"Saving AD {ad_item.title}")
             ad_screenshot_url = Advertisement.save_screenshot(
-                ad_item["screenshot_path"],
-                ad_item["ad_url"],
+                ad_item.screenshot_path,
+                ad_item.url,
             )
             ads.append(
                 Advertisement(
                     entry=entry,
-                    title=ad_item["ad_title"],
-                    url=ad_item["ad_url"],
-                    thumbnail=ad_item["thumbnail_url"],
+                    title=ad_item.title,
+                    url=ad_item.url,
+                    thumbnail=ad_item.thumbnail_url,
                     screenshot=ad_screenshot_url,
-                    tag=ad_item["tag"],
+                    tag=ad_item.tag,
                 )
             )
 

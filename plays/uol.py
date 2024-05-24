@@ -4,6 +4,7 @@ from loguru import logger
 from playwright.sync_api import sync_playwright
 
 from plays.base import BasePlay
+from plays.items import AdItem, EntryItem
 from plays.utils import get_or_none
 
 
@@ -28,19 +29,19 @@ class UOLPlay(BasePlay):
     def pre_run(self):
         pass
 
-    def find_items(self, html_content):
-        return {
-            "thumbnail_url": get_or_none(
-                r'image: {\s*default: "(https://tpc\.googlesyndication\.com/simgad/[\d?]+)"',
-                html_content,
-            ),
-            "ad_title": get_or_none(r'<div class="ad-description">(.*?)</div>', html_content),
-            "tag": get_or_none(r'<div class="ad-label-footer">(.*?)</div>', html_content),
-            "ad_url": get_or_none(
+    def find_items(self, html_content) -> AdItem:
+        return AdItem(
+            title=get_or_none(r'<div class="ad-description">(.*?)</div>', html_content),
+            url=get_or_none(
                 r'link: {\s*[^}]*\bdefault\b[^}].*?"([^"]+)"',
                 html_content
             ),
-        }
+            thumbnail=get_or_none(
+                r'image: {\s*default: "(https://tpc\.googlesyndication\.com/simgad/[\d?]+)"',
+                html_content,
+            ),
+            tag=get_or_none(r'<div class="ad-label-footer">(.*?)</div>', html_content),
+        )
 
     def get_iframe_items(self, iframe_object):
         iframe_object.scroll_into_view_if_needed()
@@ -66,7 +67,7 @@ class UOLPlay(BasePlay):
 
         return items
 
-    def run(self):
+    def run(self) -> EntryItem:
         with sync_playwright() as p:
             browser = self.launch_browser(p)
             page = browser.new_page()
@@ -84,9 +85,9 @@ class UOLPlay(BasePlay):
             entry_title = page.locator("h1.title").inner_text()
             all_items = [ad_items] + most_read_items
 
-        return {
-            "entry_title": entry_title,
-            "ad_items": all_items,
-            "entry_url": self.url,
-            "entry_screenshot_path": entry_screenshot_path,
-        }
+        return EntryItem(
+            title=entry_title,
+            ads=all_items,
+            url=self.url,
+            screenshot_path=entry_screenshot_path,
+        )

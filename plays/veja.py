@@ -5,6 +5,7 @@ from loguru import logger
 from playwright.sync_api import TimeoutError as PlaywrightTimeoutError, sync_playwright
 
 from plays.base import BasePlay
+from plays.items import AdItem, EntryItem
 from plays.utils import get_or_none
 
 
@@ -24,24 +25,24 @@ class VejaPlay(BasePlay):
             "password": config("OXYLABS_PASSWORD"),
         }
 
-    def find_items_mgid_page(self, html_content, element_content):
-        return {
-            "ad_title": get_or_none(r"<title>(.*?)</title>", html_content),
-            "ad_url": get_or_none(r'</script>\n<a href="(.*?)"', html_content),
-            "thumbnail_url": get_or_none(r'data-src="(.*?)"', element_content),
-            "tag": get_or_none(
+    def find_items_mgid_page(self, html_content, element_content) -> AdItem:
+        return AdItem(
+            title=get_or_none(r"<title>(.*?)</title>", html_content),
+            url=get_or_none(r'</script>\n<a href="(.*?)"', html_content),
+            thumbnail_url=get_or_none(r'data-src="(.*?)"', element_content),
+            tag=get_or_none(
                 r'<div class="mcdomain"><a[^>]+>(.*?)<\/a><\/div>',
                 element_content
             ),
-        }
+        )
 
-    def find_items(self, html_content, element_content):
-        return {
-            "ad_title": get_or_none(r'<h1 class="title">(.*?)</h1>', html_content),
-            "ad_url": get_or_none(r'href="(.*?)"', element_content),
-            "thumbnail_url": get_or_none(r'data-src="(.*?)"', element_content),
-            "tag": None,
-        }
+    def find_items(self, html_content, element_content) -> AdItem:
+        return AdItem(
+            title=get_or_none(r'<h1 class="title">(.*?)</h1>', html_content),
+            url=get_or_none(r'href="(.*?)"', element_content),
+            thumbnail_url=get_or_none(r'data-src="(.*?)"', element_content),
+            tag=None,
+        )
 
     def parse_elements(self, elements):
         n_elements = elements.count()
@@ -70,7 +71,7 @@ class VejaPlay(BasePlay):
     def pre_run(self):
         pass
 
-    def run(self):
+    def run(self) -> EntryItem:
         with sync_playwright() as p:
             #TODO: method to lauch new page
             browser = self.launch_browser(p)
@@ -106,9 +107,9 @@ class VejaPlay(BasePlay):
                     ad_items.append(self.find_items(page_content, element_content))
 
             logger.info("Done")
-            return {
-                "entry_title": entry_title,
-                "ad_items": ad_items,
-                "entry_url": self.url,
-                "entry_screenshot_path": entry_screenshot_path,
-            }
+            return EntryItem(
+                title=entry_title,
+                url=self.url,
+                screenshot_path=entry_screenshot_path,
+                ads=ad_items,
+            )
