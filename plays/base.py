@@ -7,7 +7,7 @@ from loguru import logger
 from playwright.sync_api import TimeoutError as PlayWrightTimeoutError, sync_playwright
 
 from plays.items import AdItem, EntryItem
-from plays.exceptions import ScrapperNotFoundError
+from plays.exceptions import ScraperNotFoundError
 
 
 class BasePlay:
@@ -42,7 +42,7 @@ class BasePlay:
             if scraper.match(url):
                 return scraper(url, *args, **scraper.kwargs)
 
-        raise ScrapperNotFoundError(f"No scrapper was found for url '{url}'")
+        raise ScraperNotFoundError(f"No scraper was found for url '{url}'")
 
     @property
     def proxy(self):
