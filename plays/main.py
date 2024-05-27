@@ -13,12 +13,12 @@ if __name__ == "__main__":
     engine = create_engine(config("DATABASE_URL"))
     session = Session(engine)
     for url in urls:
-        scrapper = BasePlay.get_scrapper(url, headless=config("HEADLESS", cast=bool))
-        entry_item = scrapper.execute()
+        scraper = BasePlay.get_scraper(url, headless=config("HEADLESS", cast=bool))
+        entry_item = scraper.execute()
         if entry_item is None:
             continue
 
-        portal = session.query(Portal).filter_by(slug=scrapper.name).one()
+        portal = session.query(Portal).filter_by(slug=scraper.name).one()
 
         logger.info(f"Saving entry {entry_item.title} on database")
         entry = create_instance(

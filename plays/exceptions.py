@@ -1,2 +1,2 @@
-class ScrapperNotFoundError(Exception):
+class ScraperNotFoundError(Exception):
     pass

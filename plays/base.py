@@ -13,24 +13,34 @@ from plays.exceptions import ScrapperNotFoundError
 class BasePlay:
     name = "base"
     n_expected_ads = 0
+    kwargs = dict()
 
-    def __init__(self, url, session_dir=None, wait_time=3, headless=True, retries=3):
+    def __init__(
+        self,
+        url,
+        session_dir=None,
+        wait_time=3,
+        headless=True,
+        retries=3,
+        remove_session=True,
+    ):
         self.url = url
         self.session_dir = session_dir
         self.wait_time = wait_time
         self.headless = headless
         self.retries = retries
+        self.remove_session = remove_session
 
     @classmethod
     def match(cls, url):
         raise NotImplementedError()
 
     @classmethod
-    def get_scrapper(cls, url, *args, **kwargs):
-        scrappers = cls.__subclasses__()
-        for scrapper in scrappers:
-            if scrapper.match(url):
-                return scrapper(url, *args, **kwargs)
+    def get_scraper(cls, url, *args, **kwargs):
+        scrapers = cls.__subclasses__()
+        for scraper in scrapers:
+            if scraper.match(url):
+                return scraper(url, *args, **scraper.kwargs)
 
         raise ScrapperNotFoundError(f"No scrapper was found for url '{url}'")
 
@@ -93,10 +103,11 @@ class BasePlay:
         return ad_items
 
     def remove_session(self):
-        try:
-            shutil.rmtree(self.get_session_dir())
-        except Exception:
-            logger.error(f"[{self.name}] Error deleting session dir: '{self.session_dir}'")
+        if self.remove_session:
+            try:
+                shutil.rmtree(self.get_session_dir())
+            except Exception:
+                logger.error(f"[{self.name}] Error deleting session dir: '{self.session_dir}'")
 
     def not_enough_items(self, entry_item: EntryItem):
         return entry_item is None or len(entry_item.ads) < self.n_expected_ads

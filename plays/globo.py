@@ -12,6 +12,7 @@ from plays.utils import get_or_none
 class GloboPlay(BasePlay):
     name = "globo"
     n_expected_ads = 50
+    kwargs = {"remove_session": False}
 
     def login(self):
         with sync_playwright() as p:
