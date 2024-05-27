@@ -36,7 +36,7 @@ class UOLPlay(BasePlay):
                 r'link: {\s*[^}]*\bdefault\b[^}].*?"([^"]+)"',
                 html_content
             ),
-            thumbnail=get_or_none(
+            thumbnail_url=get_or_none(
                 r'image: {\s*default: "(https://tpc\.googlesyndication\.com/simgad/[\d?]+)"',
                 html_content,
             ),
