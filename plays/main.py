@@ -38,6 +38,7 @@ if __name__ == "__main__":
                 ad_item.screenshot_path,
                 ad_item.url,
             )
+            ad_media_url = Advertisement.save_media(ad_item.url)
             ads.append(
                 Advertisement(
                     entry=entry,
@@ -45,6 +46,7 @@ if __name__ == "__main__":
                     url=ad_item.url,
                     thumbnail=ad_item.thumbnail_url,
                     screenshot=ad_screenshot_url,
+                    media=ad_media_url,
                     tag=ad_item.tag,
                 )
             )

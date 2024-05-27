@@ -20,6 +20,6 @@ def upload_file(file_path, object_name):
         return
     s3_client = get_client()
     bucket = config("AWS_BUCKET_NAME")
-    response = s3_client.upload_file(file_path, bucket, f"screenshots/{object_name}")
+    response = s3_client.upload_file(file_path, bucket, object_name)
 
     return f"s3://{bucket}/{object_name}"

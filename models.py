@@ -13,6 +13,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy_utils import URLType
 
+from download import dowload_media
 from utils.date import now, folder_date
 from storage import upload_file
 
@@ -63,7 +64,7 @@ class Entry(Base):
     def save_screenshot(self, session, file_path):
         url = upload_file(
             file_path,
-            f"entries/{folder_date()}/{now()}_{slugify(self.url)[:100]}.png"
+            f"screenshots/entries/{folder_date()}/{now()}_{slugify(self.url)[:100]}.png"
         )
         self.screenshot = url
         session.commit()
@@ -80,8 +81,9 @@ class Advertisement(Base):
     url = Column(URLType, nullable=False)
     title = Column(String, nullable=False)
     tag = Column(String, nullable=True)
-    thumbnail = Column(URLType, nullable=False)
+    thumbnail = Column(URLType, nullable=True)
     screenshot = Column(String, nullable=True)
+    media = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
     entry: Mapped["Entry"] = relationship(back_populates="ads")
@@ -90,8 +92,16 @@ class Advertisement(Base):
     def save_screenshot(cls, file_path, url):
         return upload_file(
             file_path,
-            f"ads/{folder_date()}/{now()}_{slugify(url[:100])}.png"
+            f"screenshots/ads/{folder_date()}/{now()}_{slugify(url[:100])}.png"
         )
+
+    @classmethod
+    def save_media(cls, url):
+        if media_path := dowload_media(url):
+            return upload_file(
+                media_path,
+                f"ads/{folder_date()}/{now()}_{slugify(url[:100])}.png"
+            )
 
     def __repr__(self):
         return f"{self.url}: ({self.entry.url})"
