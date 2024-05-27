@@ -9,7 +9,7 @@ from plays.utils import get_or_none
 
 
 class MetropolesPlay(BasePlay):
-    name = "metrople"
+    name = "metroples"
     n_expected_ads = 10
 
     @classmethod
