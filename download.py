@@ -8,6 +8,8 @@ from tenacity import retry, stop_after_attempt, wait_fixed
 
 @retry(stop=stop_after_attempt(3), wait=wait_fixed(2))
 def dowload_media(url):
+    if url is None:
+        return
     logger.info(f"Downloading media {url}...")
     resp = requests.get(url, timeout=10)
     resp.raise_for_status()

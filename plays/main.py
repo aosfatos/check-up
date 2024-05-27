@@ -38,7 +38,7 @@ if __name__ == "__main__":
                 ad_item.screenshot_path,
                 ad_item.url,
             )
-            ad_media_url = Advertisement.save_media(ad_item.url)
+            ad_media_url = Advertisement.save_media(ad_item.thumbnail_url)
             ads.append(
                 Advertisement(
                     entry=entry,
