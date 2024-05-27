@@ -9,7 +9,7 @@ from tenacity import retry, stop_after_attempt, wait_fixed
 def dowload_media(url):
     resp = requests.get(url, timeout=10)
     resp.raise_for_status()
-    temp_file = NamedTemporaryFile(suffix=".png")
+    temp_file = NamedTemporaryFile(suffix=".png", delete=False)
     with open(temp_file.name, "wb") as fobj:
         fobj.write(resp.content)
     return temp_file.name

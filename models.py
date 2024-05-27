@@ -100,7 +100,7 @@ class Advertisement(Base):
         if media_path := dowload_media(url):
             return upload_file(
                 media_path,
-                f"ads/{folder_date()}/{now()}_{slugify(url[:100])}.png"
+                f"medias/ads/{folder_date()}/{now()}_{slugify(url[:100])}.png"
             )
 
     def __repr__(self):
