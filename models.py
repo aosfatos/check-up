@@ -1,4 +1,5 @@
 import datetime
+from contextlib import suppress
 from typing import List
 
 from slugify import slugify
@@ -63,12 +64,15 @@ class Entry(Base):
     ads: Mapped[List["Advertisement"]] = relationship(back_populates="entry")
 
     def save_screenshot(self, session, file_path):
-        url = upload_file(
-            file_path,
-            f"screenshots/entries/{folder_date()}/{now()}_{slugify(self.url)[:100]}.png"
-        )
-        self.screenshot = url
-        session.commit()
+        if file_path is None:
+            return
+        with suppress(Exception):
+            url = upload_file(
+                file_path,
+                f"screenshots/entries/{folder_date()}/{now()}_{slugify(self.url)[:100]}.png"
+            )
+            self.screenshot = url
+            session.commit()
 
     def __repr__(self):
         return f"{self.portal.name}: {self.url} - ({self.created_at})"
@@ -91,10 +95,13 @@ class Advertisement(Base):
 
     @classmethod
     def save_screenshot(cls, file_path, url):
-        return upload_file(
-            file_path,
-            f"screenshots/ads/{folder_date()}/{now()}_{slugify(url[:100])}.png"
-        )
+        if file_path is None or url is None:
+            return
+        with suppress(Exception):
+            return upload_file(
+                file_path,
+                f"screenshots/ads/{folder_date()}/{now()}_{slugify(url[:100])}.png"
+            )
 
     @classmethod
     def save_media(cls, url):

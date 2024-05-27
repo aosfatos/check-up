@@ -114,7 +114,7 @@ class BasePlay:
         entry_item = None
         self.pre_run()
         # TODO: retry
-        while self.not_enough_items(entry_item) and retries > 0:
+        while self.not_enough_items(entry_item) and retries >= 0:
             try:
                 entry_item = self.run()
                 logger.info(f"{self.name.capitalize()}: found {len(entry_item.ads)} items.")
