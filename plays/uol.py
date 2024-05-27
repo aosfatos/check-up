@@ -57,12 +57,12 @@ class UOLPlay(BasePlay):
             item = page_items.nth(i)
             html_content = item.inner_html()
             items.append(
-                {
-                    "ad_url": get_or_none(r'<a href="(.*?)"', html_content),
-                    "ad_title": get_or_none(r'aria-label="(.*?)"', html_content),
-                    "thumbnail_url": get_or_none(r'source srcset="(.*?)"', html_content),
-                    "tag": None,
-                }
+                AdItem(
+                    url=get_or_none(r'<a href="(.*?)"', html_content),
+                    title=get_or_none(r'aria-label="(.*?)"', html_content),
+                    thumbnail_url=get_or_none(r'source srcset="(.*?)"', html_content),
+                    tag=None,
+                )
             )
 
         return items
