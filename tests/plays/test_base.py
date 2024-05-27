@@ -100,4 +100,4 @@ class TestBasePlay:
 
         scrapper = BasePlay(url)
 
-        assert scrapper.get_session_dir() == "/tmp/base_session"
+        assert scrapper.get_session_dir() == "/tmp/base_session/"
