@@ -24,7 +24,7 @@ class GloboPlay(BasePlay):
             page.locator("#barra-item-login").click()
             page.locator("#login").fill(config("GLOBO_USERNAME"))
             page.locator("#password").fill(config("GLOBO_PASSWORD"))
-            page.get_by_role("link", name="ENTRAR", exact=True).click()
+            page.locator("#login-button").click()
 
     @classmethod
     def match(cls, url):
@@ -39,10 +39,7 @@ class GloboPlay(BasePlay):
         )
 
     def pre_run(self):
-        try:
-            self.login()
-        except PlayWrightTimeoutError:
-            logger.warning("Timeout trying to log in. Probably already logged in")
+        pass
 
     def run(self) -> EntryItem:
         with sync_playwright() as p:
