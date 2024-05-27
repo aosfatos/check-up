@@ -18,8 +18,7 @@ if __name__ == "__main__":
         if entry_item is None:
             continue
 
-        # TODO: improve this query
-        portal = session.query(Portal).filter_by(name=scrapper.name.capitalize()).one()
+        portal = session.query(Portal).filter_by(slug=scrapper.name).one()
 
         logger.info(f"Saving entry {entry_item.title} on database")
         entry = create_instance(

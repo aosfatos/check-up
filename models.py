@@ -40,6 +40,7 @@ class Portal(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name = Column(String, unique=True, nullable=False)
     url = Column(URLType, unique=True, nullable=False)
+    slug = Column(URLType, unique=True, nullable=False)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
     entries: Mapped[List["Entry"]] = relationship(back_populates="portal")
