@@ -41,6 +41,12 @@ class GloboPlay(BasePlay):
     def pre_run(self):
         pass
 
+    def is_logged_in(self, *args, **kwargs):
+        try:
+            kwargs["page"].locator(".login-profile__menu").first.inner_html()
+        except PlayWrightTimeoutError:
+            raise Exception("Not logged in!")
+
     def run(self) -> EntryItem:
         with sync_playwright() as p:
             browser = self.launch_browser(p)
@@ -48,6 +54,8 @@ class GloboPlay(BasePlay):
             logger.info(f"Opening URL {self.url}...")
             page.goto(self.url, timeout=180_000)
             logger.info("Searching for ads...")
+
+            self.is_logged_in()
 
             page.locator(".tbl-feed-header-text").scroll_into_view_if_needed()
             self.scroll_down(page, 40, 400, wait_time=1)
