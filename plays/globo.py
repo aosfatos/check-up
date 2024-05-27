@@ -1,6 +1,8 @@
+import time
+
 from decouple import config
 from loguru import logger
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import TimeoutError as PlayWrightTimeoutError, sync_playwright
 
 from plays.base import BasePlay
 from plays.items import AdItem, EntryItem
@@ -9,6 +11,20 @@ from plays.utils import get_or_none
 
 class GloboPlay(BasePlay):
     name = "globo"
+    n_expected_ads = 50
+
+    def login(self):
+        with sync_playwright() as p:
+            browser = self.launch_browser(p)
+            page = browser.new_page()
+            login_url = "https://login.globo.com/login/"
+            logger.info(f"Opening URL {login_url}...")
+            page.goto(login_url)
+            time.sleep(self.wait_time)
+            page.locator("#barra-item-login").click()
+            page.locator("#login").fill(config("GLOBO_USERNAME"))
+            page.locator("#password").fill(config("GLOBO_PASSWORD"))
+            page.get_by_role("link", name="ENTRAR", exact=True).click()
 
     @classmethod
     def match(cls, url):
@@ -22,16 +38,11 @@ class GloboPlay(BasePlay):
             tag=get_or_none(r'<span class="branding-inner".*?>(.*?)<\/span>', html_content),
         )
 
-    @property
-    def proxy(self):
-        return {
-            "server": config("OXYLABS_PROXY_SERVER"),
-            "username": config("OXYLABS_USERNAME"),
-            "password": config("OXYLABS_PASSWORD"),
-        }
-
     def pre_run(self):
-        pass
+        try:
+            self.login()
+        except PlayWrightTimeoutError:
+            logger.warning("Timeout trying to log in. Probably already logged in")
 
     def run(self) -> EntryItem:
         with sync_playwright() as p:
@@ -40,10 +51,12 @@ class GloboPlay(BasePlay):
             logger.info(f"Opening URL {self.url}...")
             page.goto(self.url, timeout=180_000)
             logger.info("Searching for ads...")
+
             page.locator(".tbl-feed-header-text").scroll_into_view_if_needed()
+            self.scroll_down(page, 40, 400, wait_time=1)
             page.locator("#boxComentarios").scroll_into_view_if_needed()
 
-            entry_screenshot_path = self.take_screenshot(page, self.url, goto=False)
+            entry_screenshot_path = self.take_screenshot(page, self.url, goto=False, timeout=60_000)
             entry_title = page.locator("title").inner_text()
 
             elements = page.locator(".videoCube")
