@@ -53,4 +53,4 @@ if __name__ == "__main__":
         logger.info(f"[{entry.id}] Saving {len(ads)} ads to database")
         session.add_all(ads)
         session.commit()
-        logger.info("Done!")
+        logger.info(f"[{portal.slug}] Done scraping entry {entry.id}")
