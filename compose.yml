@@ -8,6 +8,7 @@ services:
     container_name: healthcheck_scraper
     volumes:
       - ./plays:/project/plays
+      - ./sessions/globo_session:/tmp/globo_session
     tty: true
     depends_on:
       - db
