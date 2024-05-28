@@ -15,12 +15,14 @@ class IGPlay(BasePlay):
     @classmethod
     def match(cls, url):
         return "ig.com.br" in url
+
     def find_items(self, html_content) -> AdItem:
         return AdItem(
             title=get_or_none(r'title="(.*?)"', html_content),
             url=get_or_none(r'href="(.*?)"', html_content),
             thumbnail_url=get_or_none(r'url\(&quot;(.*?)&quot;\)', html_content),
             tag=get_or_none(r'<span class="branding-inner".*?>(.*?)<\/span>', html_content),
+            excerpt=get_or_none(r'slot="description" title="(.*?)"', html_content),
         )
 
     def pre_run(self):
@@ -36,7 +38,7 @@ class IGPlay(BasePlay):
             page.locator("#taboola-below-article-thumbnails").scroll_into_view_if_needed()
 
             entry_screenshot_path = self.take_screenshot(page, self.url, goto=False)
-            entry_title = page.locator("title").inner_text()
+            entry_title = page.locator("head title").inner_text()
             time.sleep(self.wait_time * 2)
 
             elements = page.locator(".videoCube")

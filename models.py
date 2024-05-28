@@ -88,6 +88,7 @@ class Advertisement(Base):
     tag = Column(String, nullable=True)
     thumbnail = Column(URLType, nullable=True)
     screenshot = Column(String, nullable=True)
+    excerpt = Column(String, nullable=True)
     media = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 

@@ -47,6 +47,7 @@ if __name__ == "__main__":
                     screenshot=ad_screenshot_url,
                     media=ad_media_url,
                     tag=ad_item.tag,
+                    excerpt=ad_item.excerpt,
                 )
             )
 

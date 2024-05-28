@@ -37,6 +37,7 @@ class GloboPlay(BasePlay):
             url=get_or_none(r'href="(.*?)"', html_content),
             thumbnail_url=get_or_none(r'url\(&quot;(.*?)&quot;\)', html_content),
             tag=get_or_none(r'<span class="branding-inner".*?>(.*?)<\/span>', html_content),
+            excerpt=get_or_none(r'slot="description" title="(.*?)"', html_content),
         )
 
     def pre_run(self):

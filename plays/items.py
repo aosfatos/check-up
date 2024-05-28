@@ -9,6 +9,7 @@ class AdItem:
     thumbnail_url: str
     tag: str | None = None
     screenshot_path: str | None = None
+    excerpt: str | None = None
 
     def __str__(self):
         return f"{self.title}: ({self.url[:50]})"
