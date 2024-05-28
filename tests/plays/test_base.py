@@ -7,6 +7,7 @@ from plays import (
     EstadaoPlay,
     FolhaPlay,
     GloboPlay,
+    IGPlay,
     MetropolesPlay,
     VejaPlay,
     TerraPlay,
@@ -78,6 +79,14 @@ class TestBasePlay:
         scraper = BasePlay.get_scraper(url)
 
         assert isinstance(scraper, ClicRBSPlay)
+        assert scraper.url == url
+
+    def test_return_correct_scraper_ig(self):
+        url = "https://ultimosegundo.ig.com.br/brasil/entry-slug"
+
+        scraper = BasePlay.get_scraper(url)
+
+        assert isinstance(scraper, IGPlay)
         assert scraper.url == url
 
     def test_raise_error_if_no_scraper_is_found(self):
