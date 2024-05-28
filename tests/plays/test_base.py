@@ -118,4 +118,4 @@ class TestBasePlay:
 
         scraper = BasePlay(url)
 
-        assert scraper.get_session_dir() == "/tmp/base_session/"
+        assert scraper.get_session_dir() == "./sessions/base_session/"

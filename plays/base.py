@@ -50,7 +50,7 @@ class BasePlay:
 
     def get_session_dir(self):
         if self.session_dir is None:
-            return f"/tmp/{self.name}_session/"
+            return f"./sessions/{self.name}_session/"
 
         return self.session_dir
 
