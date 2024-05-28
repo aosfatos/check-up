@@ -46,7 +46,7 @@ class GloboPlay(BasePlay):
         try:
             page.locator(".login-profile__menu").first.inner_html()
         except PlayWrightTimeoutError:
-            raise Exception("Not logged in!")
+            raise Exception(f"[{self.name}] Not logged in!")
 
     def run(self) -> EntryItem:
         with sync_playwright() as p:

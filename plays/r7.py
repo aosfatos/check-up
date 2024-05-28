@@ -34,10 +34,12 @@ class R7Play(BasePlay):
             logger.info(f"[{self.name}] Opening URL '{self.url}'...")
             page.goto(self.url, timeout=180_000)
             logger.info(f"[{self.name}] Searching for ads...")
+            # Try to avoid 'Element is not attached to the DOM'
+            page.locator("#taboola-below-article-thumbnails").click()
             page.locator("#taboola-below-article-thumbnails").scroll_into_view_if_needed()
 
             entry_screenshot_path = self.take_screenshot(page, self.url, goto=False)
-            entry_title = page.locator("h1").inner_text()
+            entry_title = page.locator("head title").inner_text()
             time.sleep(self.wait_time * 2)
 
             elements = page.locator(".videoCube")
