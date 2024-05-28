@@ -9,6 +9,7 @@ from plays import (
     GloboPlay,
     IGPlay,
     MetropolesPlay,
+    R7Play,
     VejaPlay,
     TerraPlay,
     UOLPlay
@@ -87,6 +88,14 @@ class TestBasePlay:
         scraper = BasePlay.get_scraper(url)
 
         assert isinstance(scraper, IGPlay)
+        assert scraper.url == url
+
+    def test_return_correct_scraper_r7(self):
+        url = "https://noticias.r7.com/cidades/entry-slug"
+
+        scraper = BasePlay.get_scraper(url)
+
+        assert isinstance(scraper, R7Play)
         assert scraper.url == url
 
     def test_raise_error_if_no_scraper_is_found(self):
