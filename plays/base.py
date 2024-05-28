@@ -22,14 +22,14 @@ class BasePlay:
         wait_time=3,
         headless=True,
         retries=3,
-        remove_session=True,
+        allow_remove_session=True,
     ):
         self.url = url
         self.session_dir = session_dir
         self.wait_time = wait_time
         self.headless = headless
         self.retries = retries
-        self.remove_session = remove_session
+        self.allow_remove_session = allow_remove_session
 
     @classmethod
     def match(cls, url):
@@ -55,7 +55,7 @@ class BasePlay:
         return self.session_dir
 
     def take_screenshot(self, page, url, goto=True, timeout=30_000):
-        logger.info(f"Taking screenshot from {url}...")
+        logger.info(f"Taking screenshot from '{url}'...")
         temp_file = NamedTemporaryFile(suffix=".png", delete=False)
         if goto:
             page.goto(url)
@@ -103,11 +103,18 @@ class BasePlay:
         return ad_items
 
     def remove_session(self):
-        if self.remove_session:
+        if self.allow_remove_session:
             try:
+                logger.info(f"[{self.name}] Removing session...")
                 shutil.rmtree(self.get_session_dir())
+                logger.info(f"[{self.name}] Done!")
             except Exception:
-                logger.error(f"[{self.name}] Error deleting session dir: '{self.session_dir}'")
+                logger.error(
+                    f"[{self.name}] Error deleting session dir: '{self.get_session_dir()}'"
+                )
+
+        else:
+            logger.info(f"[{self.name}] Removing session not allowed...")
 
     def not_enough_items(self, entry_item: EntryItem):
         return entry_item is None or len(entry_item.ads) < self.n_expected_ads
@@ -138,7 +145,7 @@ class BasePlay:
                     f"[{self.name}] Not enough ADs were found with '{self.name}'."
                     f" Trying again. Remaining {retries}"
                 )
-                # Lets remove session and login again. It sometimes works
+                # Remove session and login again. It sometimes works
                 self.remove_session()
 
         entry_item = self.post_run(entry_item)
