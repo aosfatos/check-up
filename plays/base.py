@@ -135,7 +135,7 @@ class BasePlay:
         while self.not_enough_items(entry_item) and retries >= 0:
             try:
                 entry_item = self.run()
-                logger.info(f"{self.name.capitalize()}: found {len(entry_item.ads)} items.")
+                logger.info(f"[{self.name}]: Found {len(entry_item.ads)} items.")
             except PlayWrightTimeoutError as exc:
                 logger.error(str(exc))
 
@@ -147,6 +147,9 @@ class BasePlay:
                 )
                 # Remove session and login again. It sometimes works
                 self.remove_session()
+
+        # TODO:
+        # raise exception if not enought ads are found after retries
 
         entry_item = self.post_run(entry_item)
         if entry_item is not None:

@@ -71,8 +71,9 @@ class UOLPlay(BasePlay):
         with sync_playwright() as p:
             browser = self.launch_browser(p)
             page = browser.new_page()
-            logger.info(f"Opening URL '{self.url}'...")
+            logger.info(f"[{self.name}] Opening URL '{self.url}'...")
             page.goto(self.url, timeout=60_000)
+            logger.info(f"[{self.name}] Searching for ads...")
             page.get_by_text("As mais lidas agora").scroll_into_view_if_needed()
             time.sleep(self.wait_time)
             ad_items = self.get_iframe_items(

@@ -15,7 +15,6 @@ class IGPlay(BasePlay):
     @classmethod
     def match(cls, url):
         return "ig.com.br" in url
-
     def find_items(self, html_content) -> AdItem:
         return AdItem(
             title=get_or_none(r'title="(.*?)"', html_content),
@@ -31,9 +30,9 @@ class IGPlay(BasePlay):
         with sync_playwright() as p:
             browser = self.launch_browser(p)
             page = browser.new_page()
-            logger.info(f"Opening URL {self.url}...")
+            logger.info(f"[{self.name}] Opening URL '{self.url}'...")
             page.goto(self.url, timeout=180_000)
-            logger.info("Searching for ads...")
+            logger.info(f"[{self.name}] Searching for ads...")
             page.locator("#taboola-below-article-thumbnails").scroll_into_view_if_needed()
 
             entry_screenshot_path = self.take_screenshot(page, self.url, goto=False)

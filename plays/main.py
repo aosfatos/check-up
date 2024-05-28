@@ -20,7 +20,7 @@ if __name__ == "__main__":
 
         portal = session.query(Portal).filter_by(slug=scraper.name).one()
 
-        logger.info(f"Saving entry {entry_item.title} on database")
+        logger.info(f"Saving entry '{entry_item.title}'")
         entry = create_instance(
             session,
             Entry,
@@ -29,10 +29,10 @@ if __name__ == "__main__":
             title=entry_item.title,
         )
         entry.save_screenshot(session, entry_item.screenshot_path)
-        logger.info(f"Saved entry with id {entry.id}")
+        logger.info(f"Saved entry with id: {entry.id}")
         ads = []
         for ad_item in entry_item.ads:
-            logger.info(f"Saving AD {ad_item.title}")
+            logger.info(f"[{entry.id}] Saving AD: '{ad_item.title}'")
             ad_screenshot_url = Advertisement.save_screenshot(
                 ad_item.screenshot_path,
                 ad_item.url,
@@ -50,7 +50,7 @@ if __name__ == "__main__":
                 )
             )
 
-        logger.info(f"Saving {len(ads)} ads to database")
+        logger.info(f"[{entry.id}] Saving {len(ads)} ads to database")
         session.add_all(ads)
         session.commit()
         logger.info("Done!")
