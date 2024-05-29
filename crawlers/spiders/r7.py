@@ -2,7 +2,7 @@ import re
 
 import scrapy
 
-from items import URLItem
+from spiders.items import URLItem
 
 
 class R7Spider(scrapy.Spider):

@@ -1,0 +1,21 @@
+from decouple import config
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
+
+from models import URLQueue
+
+
+class PostgresPipeline:
+    def __init__(self):
+        self.engine = create_engine(config("DATABASE_URL"))
+        self.session = Session(self.engine)
+
+    def process_item(self, item, spider):
+        url = URLQueue(url=item["url"])
+        self.session.add(url)
+        self.session.commit()
+        return item
+
+    def close_spider(self, spider):
+        self.session.close()
+        self.engine.dispose()
