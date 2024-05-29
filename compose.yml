@@ -7,7 +7,6 @@ services:
       context: scrapers
     container_name: healthcheck_scraper
     volumes:
-      - ./plays:/project/plays
       - ./sessions/:/project/sessions/
     tty: true
     depends_on:

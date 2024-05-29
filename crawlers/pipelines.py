@@ -2,6 +2,7 @@ from decouple import config
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
+# TODO move this model to scrapers and use reflection here
 from models import URLQueue
 
 
