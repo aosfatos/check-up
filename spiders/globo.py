@@ -1,5 +1,7 @@
 import scrapy
 
+from items import URLItem
+
 
 class GloboSpider(scrapy.Spider):
     name = "globospider"
@@ -13,8 +15,10 @@ class GloboSpider(scrapy.Spider):
         return len(entry_url) > 100 and entry_url.startswith("https://oglobo.globo.com")
 
     def parse(self, response):
+        url_item = URLItem()
         for entry in response.css("a"):
             url = entry.attrib.get("href")
             if url and self.allow_url(url):
-                yield {"url": url}
+                url_item["url"] = url
+                yield url_item
                 yield scrapy.Request(url=url, callback=self.parse)
