@@ -4,7 +4,7 @@ services:
   scraper:
     env_file: .env
     build:
-      context: .
+      context: scrapers
     container_name: healthcheck_scraper
     volumes:
       - ./plays:/project/plays
