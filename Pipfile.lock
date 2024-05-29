@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "029a1772c97a5e6b2708406372181bb7f3333e48d8d1d9a3273a04be63ac3402"
+            "sha256": "7e70c55fa9e901214e9b17cc28344706df1528f461063b6af98a11793ea6143c"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -49,11 +49,11 @@
         },
         "botocore": {
             "hashes": [
-                "sha256:449912ba3c4ded64f21d09d428146dd9c05337b2a112e15511bf2c4888faae79",
-                "sha256:8ca87776450ef41dd25c327eb6e504294230a5756940d68bcfdedc4a7cdeca97"
+                "sha256:5705f74fda009656a218ffaf4afd81228359160f2ab806ab8222d07e9da3a73b",
+                "sha256:606d1e55984d45e41a812badee292755f4db0233eed9cca63ea3bb8f5755507f"
             ],
             "markers": "python_version >= '3.8'",
-            "version": "==1.34.113"
+            "version": "==1.34.114"
         },
         "certifi": {
             "hashes": [
@@ -643,11 +643,11 @@
         },
         "prompt-toolkit": {
             "hashes": [
-                "sha256:3527b7af26106cbc65a040bcc84839a3566ec1b051bb0bfe953631e704b0ff7d",
-                "sha256:a11a29cb3bf0a28a387fe5122cdb649816a957cd9261dcedf8c9f1fef33eacf6"
+                "sha256:07c60ee4ab7b7e90824b61afa840c8f5aad2d46b3e2e10acc33d8ecc94a49089",
+                "sha256:a29b89160e494e3ea8622b09fa5897610b437884dcdcd054fdc1308883326c2a"
             ],
             "markers": "python_full_version >= '3.7.0'",
-            "version": "==3.0.43"
+            "version": "==3.0.45"
         },
         "protego": {
             "hashes": [
@@ -878,15 +878,6 @@
             "index": "pypi",
             "markers": "python_version >= '3.8'",
             "version": "==2.11.1"
-        },
-        "scrapy-playwright": {
-            "hashes": [
-                "sha256:26947ee32a9f837d325da4fe0bcf8384e2c097e12de430283aeb550754d69fca",
-                "sha256:b7e171ec517460d4ec7a8552f7561a124ec945ac9ac77eb8a6639278dc7615d7"
-            ],
-            "index": "pypi",
-            "markers": "python_version >= '3.8'",
-            "version": "==0.0.34"
         },
         "service-identity": {
             "hashes": [
