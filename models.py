@@ -4,6 +4,7 @@ from typing import List
 
 from slugify import slugify
 from sqlalchemy import (
+    Boolean,
     Column,
     DateTime,
     ForeignKey,
@@ -121,7 +122,18 @@ class URLQueue(Base):
 
     id = Column(Integer, primary_key=True)
     url = Column(URLType, nullable=False)
+    processed = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
+
+    @classmethod
+    def next(cls, session):
+        return session.query(URLQueue).where(cls.processed==False).with_for_update(
+            skip_locked=True
+        ).first()
+
+    def set_as_processed(self, session):
+        self.processed = True
+        session.commit()
 
     def __repr__(self):
         return f"{self.url}- {self.created_at}"
