@@ -2,16 +2,14 @@ import re
 
 import scrapy
 
+from spiders.base import BaseSpider
 from spiders.items import URLItem
 
 
-class IGSpider(scrapy.Spider):
+class IGSpider(BaseSpider):
     name = "igspider"
     start_urls = ["https://www.ig.com.br/"]
     allowed_domains = ["ig.com.br"]
-    custom_settings = {
-        "DEPTH_LIMIT": 1,
-    }
 
     def allow_url(self, entry_url):
         return (

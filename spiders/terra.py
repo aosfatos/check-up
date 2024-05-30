@@ -1,15 +1,13 @@
 import scrapy
 
+from spiders.base import BaseSpider
 from spiders.items import URLItem
 
 
-class TerraSpider(scrapy.Spider):
+class TerraSpider(BaseSpider):
     name = "terraspider"
     start_urls = ["https://www.terra.com.br/"]
     allowed_domains = ["terra.com.br"]
-    custom_settings = {
-        "DEPTH_LIMIT": 1,
-    }
 
     def allow_url(self, entry_url):
         return True

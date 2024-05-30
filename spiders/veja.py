@@ -1,15 +1,13 @@
 import scrapy
 
+from spiders.base import BaseSpider
 from spiders.items import URLItem
 
 
-class VejaSpider(scrapy.Spider):
+class VejaSpider(BaseSpider):
     name = "vejaspider"
     start_urls = ["https://veja.abril.com.br/"]
     allowed_domains = ["veja.abril.com.br"]
-    custom_settings = {
-        "DEPTH_LIMIT": 1,
-    }
 
     def allow_url(self, entry_url):
         return (

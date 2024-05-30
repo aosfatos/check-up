@@ -1,15 +1,13 @@
 import scrapy
 
+from spiders.base import BaseSpider
 from spiders.items import URLItem
 
 
-class FolhaSpider(scrapy.Spider):
+class FolhaSpider(BaseSpider):
     name = "folhaspider"
     start_urls = ["https://www.folha.uol.com.br/"]
     allowed_domains = ["folha.uol.com.br"]
-    custom_settings = {
-        "DEPTH_LIMIT": 2,
-    }
 
     def allow_url(self, entry_url):
         return "www1.folha.uol.com.br" in entry_url and len(entry_url) > 100

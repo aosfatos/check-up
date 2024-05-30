@@ -1,15 +1,13 @@
 import scrapy
 
+from spiders.base import BaseSpider
 from spiders.items import URLItem
 
 
-class RBSSpider(scrapy.Spider):
+class RBSSpider(BaseSpider):
     name = "rbsspider"
     start_urls = ["https://www.clicrbs.com.br/"]
     allowed_domains = ["clicrbs.com.br"]
-    custom_settings = {
-        "DEPTH_LIMIT": 1,
-    }
 
     def allow_url(self, entry_url):
         return (

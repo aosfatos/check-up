@@ -1,3 +1,5 @@
+import sched
+import time
 import traceback
 
 from decouple import config
@@ -8,8 +10,22 @@ from sqlalchemy.orm import Session
 from plays.base import BasePlay
 from models import Advertisement, Entry, Portal, URLQueue, create_instance
 
+scheduler = sched.scheduler(time.time, time.sleep)
+
+duration = 1
+
+
+def event_loop():
+    main()
+    scheduler.enter(duration, 1, event_loop)
+
 
 def run():
+    event_loop()
+    scheduler.run()
+
+
+def main():
     engine = create_engine(config("DATABASE_URL"))
     session = Session(engine)
 

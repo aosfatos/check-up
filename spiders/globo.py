@@ -1,15 +1,13 @@
 import scrapy
 
+from spiders.base import BaseSpider
 from spiders.items import URLItem
 
 
-class GloboSpider(scrapy.Spider):
+class GloboSpider(BaseSpider):
     name = "globospider"
     start_urls = ["https://oglobo.globo.com/"]
     allowed_domains = ["oglobo.globo.com/"]
-    custom_settings = {
-        "DEPTH_LIMIT": 2,
-    }
 
     def allow_url(self, entry_url):
         return len(entry_url) > 100 and entry_url.startswith("https://oglobo.globo.com")

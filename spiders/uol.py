@@ -2,16 +2,14 @@ import re
 
 import scrapy
 
+from spiders.base import BaseSpider
 from spiders.items import URLItem
 
 
-class UOLSpider(scrapy.Spider):
+class UOLSpider(BaseSpider):
     name = "uolspider"
     start_urls = ["https://www.uol.com.br/"]
     allowed_domains = ["uol.com.br/"]
-    custom_settings = {
-        "DEPTH_LIMIT": 2,
-    }
 
     def allow_url(self, entry_url):
         return (
