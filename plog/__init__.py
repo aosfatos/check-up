@@ -10,7 +10,7 @@ try:
         handlers=[
             dict(sink=sys.stderr),
             dict(sink=log_path, enqueue=False, rotation=1e+7),  # approx. 10Mb for rotating files
-            dict(sink=error_path, enqueue=False, rotation=1e+7, level="error"),
+            dict(sink=error_path, enqueue=False, rotation=1e+7, level=40),
         ],
     )
 except PermissionError:

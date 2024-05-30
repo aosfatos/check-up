@@ -142,7 +142,6 @@ class URLQueue(Base):
         return (
             session.query(URLQueue).join(URLQueue.statuses)
             .filter(QueueStatus.current==True, QueueStatus.value==value)
-            .order_by(URLQueue.created_at.asc())
         )
 
     @classmethod
