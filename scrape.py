@@ -29,7 +29,7 @@ def main():
     engine = create_engine(config("DATABASE_URL"))
     session = Session(engine)
 
-    url_obj = URLQueue.next(session)
+    url_obj = URLQueue.next_random(session)
     if url_obj is None:
         logger.info("Queue is empty")
         return

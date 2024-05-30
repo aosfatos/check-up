@@ -15,6 +15,7 @@ from sqlalchemy import (
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.schema import UniqueConstraint
+from  sqlalchemy.sql.expression import func
 from sqlalchemy_utils import ChoiceType, URLType
 
 from download import dowload_media
@@ -129,6 +130,12 @@ class URLQueue(Base):
     @classmethod
     def next(cls, session):
         return cls.created(session).with_for_update(skip_locked=True).first()
+
+    @classmethod
+    def next_random(cls, session):
+        return cls.created(session).with_for_update(skip_locked=True).order_by(
+            func.random()
+        ).first()
 
     @classmethod
     def _filter_by_status(cls, session, value):
