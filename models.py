@@ -69,12 +69,10 @@ class Entry(Base):
     def save_screenshot(self, session, file_path):
         if file_path is None:
             return
+        dest = f"screenshots/entries/{folder_date()}/{now()}_{slugify(self.url)[:100]}.png"
         with suppress(Exception):
-            url = upload_file(
-                file_path,
-                f"screenshots/entries/{folder_date()}/{now()}_{slugify(self.url)[:100]}.png"
-            )
-            self.screenshot = url
+            upload_file(file_path, dest)
+            self.screenshot = dest
             session.commit()
 
     def __repr__(self):
@@ -101,19 +99,20 @@ class Advertisement(Base):
     def save_screenshot(cls, file_path, url):
         if file_path is None or url is None:
             return
-        with suppress(Exception):
-            return upload_file(
-                file_path,
-                f"screenshots/ads/{folder_date()}/{now()}_{slugify(url[:100])}.png"
-            )
+        try:
+            dest = f"screenshots/ads/{folder_date()}/{now()}_{slugify(url[:100])}.png"
+            upload_file(file_path, dest)
+        except Exception:
+            dest = None
+
+        return dest
 
     @classmethod
     def save_media(cls, url):
         if media_path := dowload_media(url):
-            return upload_file(
-                media_path,
-                f"medias/ads/{folder_date()}/{now()}_{slugify(url[:100])}.png"
-            )
+            dest = f"medias/ads/{folder_date()}/{now()}_{slugify(url[:100])}.png"
+            upload_file(media_path, dest)
+            return dest
 
     def __repr__(self):
         return f"{self.url}: ({self.entry.url})"
