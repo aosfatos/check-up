@@ -3,11 +3,11 @@ import time
 import traceback
 
 from decouple import config
-from loguru import logger
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
 from plays.base import BasePlay
+from plog import logger
 from models import Advertisement, Entry, Portal, URLQueue, create_instance
 
 scheduler = sched.scheduler(time.time, time.sleep)

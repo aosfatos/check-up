@@ -8,6 +8,7 @@ services:
     container_name: healthcheck_scraper
     volumes:
       - ./sessions/:/project/sessions/
+      - ./logs/:/var/log/
     tty: true
     depends_on:
       - db

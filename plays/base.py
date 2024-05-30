@@ -3,11 +3,11 @@ import time
 from tempfile import NamedTemporaryFile
 from typing import List
 
-from loguru import logger
 from playwright.sync_api import TimeoutError as PlayWrightTimeoutError, sync_playwright
 
 from plays.items import AdItem, EntryItem
 from plays.exceptions import ScraperNotFoundError
+from plog import logger
 
 
 class BasePlay:

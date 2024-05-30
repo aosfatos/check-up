@@ -1,11 +1,11 @@
 import time
 
-from loguru import logger
 from playwright.sync_api import sync_playwright
 
 from plays.base import BasePlay
 from plays.items import AdItem, EntryItem
 from plays.utils import get_or_none
+from plog import logger
 
 
 class UOLPlay(BasePlay):
