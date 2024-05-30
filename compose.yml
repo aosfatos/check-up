@@ -4,19 +4,10 @@ services:
   scraper:
     env_file: .env
     build:
-      context: scrapers
+      context: .
     container_name: healthcheck_scraper
     volumes:
       - ./sessions/:/project/sessions/
-    tty: true
-    depends_on:
-      - db
-
-  crawler:
-    env_file: .env
-    build:
-      context: crawlers
-    container_name: healthcheck_crawler
     tty: true
     depends_on:
       - db

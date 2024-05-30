@@ -116,6 +116,17 @@ class Advertisement(Base):
         return f"{self.url}: ({self.entry.url})"
 
 
+class URLQueue(Base):
+    __tablename__ = "urlqueue"
+
+    id = Column(Integer, primary_key=True)
+    url = Column(URLType, nullable=False)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+
+    def __repr__(self):
+        return f"{self.url}- {self.created_at}"
+
+
 def get_or_create(session, model, defaults=None, **kwargs):
     instance = session.query(model).filter_by(**kwargs).one_or_none()
     if instance:
