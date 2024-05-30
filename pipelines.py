@@ -12,9 +12,7 @@ class PostgresPipeline:
         self.session = Session(self.engine)
 
     def process_item(self, item, spider):
-        url = URLQueue(url=item["url"])
-        self.session.add(url)
-        self.session.commit()
+        URLQueue.create(self.session, item["url"])
         return item
 
     def close_spider(self, spider):

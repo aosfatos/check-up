@@ -1,4 +1,5 @@
 import datetime
+import enum
 from contextlib import suppress
 from typing import List
 
@@ -13,7 +14,8 @@ from sqlalchemy import (
 )
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy_utils import URLType
+from sqlalchemy.schema import UniqueConstraint
+from sqlalchemy_utils import ChoiceType, URLType
 
 from download import dowload_media
 from utils.date import now, folder_date
@@ -122,21 +124,91 @@ class URLQueue(Base):
 
     id = Column(Integer, primary_key=True)
     url = Column(URLType, nullable=False)
-    processed = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    statuses: Mapped[List["QueueStatus"]] = relationship(back_populates="url_queue")
 
     @classmethod
     def next(cls, session):
-        return session.query(URLQueue).where(cls.processed==False).with_for_update(
-            skip_locked=True
-        ).first()
+        return cls.created(session).with_for_update(skip_locked=True).first()
 
-    def set_as_processed(self, session):
-        self.processed = True
+    @classmethod
+    def _filter_by_status(cls, session, value):
+        return (
+            session.query(URLQueue).join(URLQueue.statuses)
+            .filter(QueueStatus.current==True, QueueStatus.value==value)
+            .order_by(URLQueue.created_at.asc())
+        )
+
+    @classmethod
+    def created(cls, session):
+        return cls._filter_by_status(session, QueueStatus.Statuses.Created)
+
+    @classmethod
+    def started(cls, session):
+        return cls._filter_by_status(session, QueueStatus.Statuses.Started)
+
+    @classmethod
+    def finished(cls, session):
+        return cls._filter_by_status(session, QueueStatus.Statuses.Finished)
+
+    @classmethod
+    def errored(cls, session):
+        return cls._filter_by_status(session, QueueStatus.Statuses.Error)
+
+    @classmethod
+    def create(cls, session, url):
+        url_obj = cls(url=url)
+        status = QueueStatus(url_queue=url_obj, value=QueueStatus.Statuses.Created, current=True)
+        session.add(url_obj)
+        session.add(status)
         session.commit()
+        return url_obj
+
+    def _set_status(self, session, value, **kwargs):
+        with session.begin_nested():
+            for status in self.statuses:
+                status.current = False
+                session.add(status)
+
+            status = QueueStatus(url_queue=self, value=value, current=True, info=kwargs.get("info"))
+            session.add(status)
+            session.commit()
+
+    def set_as_started(self, session):
+        self._set_status(session, QueueStatus.Statuses.Started)
+
+    def set_as_finished(self, session):
+        self._set_status(session, QueueStatus.Statuses.Finished)
+
+    def set_as_error(self, session, info):
+        self._set_status(session, QueueStatus.Statuses.Error, info=info)
 
     def __repr__(self):
-        return f"{self.url}- {self.created_at}"
+        return f"{self.url}: {self.created_at}"
+
+
+class QueueStatus(Base):
+    __tablename__ = "queuestatus"
+    __table_args__ = (
+        UniqueConstraint("url_queue_id", "value", name="url_status_unique"),
+    )
+
+    class Statuses(enum.Enum):
+        Created = 0
+        Started = 1
+        Finished = 2
+        Error = 3
+
+    id = Column(Integer, primary_key=True)
+    url_queue_id: Mapped[int] = mapped_column(ForeignKey("urlqueue.id"))
+    value = Column(ChoiceType(Statuses, impl=Integer()), nullable=False)
+    current = Column(Boolean, default=False, nullable=False)
+    info = Column(String, nullable=True)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    url_queue: Mapped["URLQueue"] = relationship(back_populates="statuses")
+
+    def __repr__(self):
+        return f"URLQueue({self.url_queue_id}) - ({self.value})"
 
 
 def get_or_create(session, model, defaults=None, **kwargs):
