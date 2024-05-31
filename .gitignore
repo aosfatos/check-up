@@ -4,4 +4,5 @@
 collections/
 *.warc.*
 sessions/
+logs/
 __pycache__
