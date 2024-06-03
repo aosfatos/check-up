@@ -6,7 +6,7 @@ from typing import List
 from playwright.sync_api import TimeoutError as PlayWrightTimeoutError, sync_playwright
 
 from plays.items import AdItem, EntryItem
-from plays.exceptions import ScraperNotFoundError
+from plays.exceptions import NotEnoughADSFound, ScraperNotFoundError
 from plog import logger
 
 
@@ -148,8 +148,8 @@ class BasePlay:
                 # Remove session and login again. It sometimes works
                 self.remove_session()
 
-        # TODO:
-        # raise exception if not enought ads are found after retries
+        if self.not_enough_items(entry_item):
+            raise NotEnoughADSFound()
 
         entry_item = self.post_run(entry_item)
         if entry_item is not None:
