@@ -38,6 +38,7 @@ def main():
     url_obj.set_as_started(session)
 
     url = url_obj.url
+    entry_item = None
     try:
         scraper = BasePlay.get_scraper(url, headless=config("HEADLESS", cast=bool))
         entry_item = scraper.execute()
