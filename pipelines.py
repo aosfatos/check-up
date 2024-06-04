@@ -2,7 +2,6 @@ from decouple import config
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
-# TODO move this model to scrapers and use reflection here
 from models import URLQueue
 
 
@@ -12,7 +11,10 @@ class PostgresPipeline:
         self.session = Session(self.engine)
 
     def process_item(self, item, spider):
-        URLQueue.create(self.session, item["url"])
+        exists = self.session.query(URLQueue).filter(URLQueue.url == item["url"]).first()
+        if exists is None:
+            URLQueue.create(self.session, item["url"])
+
         return item
 
     def close_spider(self, spider):

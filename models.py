@@ -141,7 +141,7 @@ class URLQueue(Base):
     def _filter_by_status(cls, session, value):
         return (
             session.query(URLQueue).join(URLQueue.statuses)
-            .filter(QueueStatus.current==True, QueueStatus.value==value)
+            .filter(QueueStatus.current == True, QueueStatus.value == value)
         )
 
     @classmethod
