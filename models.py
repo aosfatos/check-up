@@ -15,10 +15,10 @@ from sqlalchemy import (
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.schema import UniqueConstraint
-from  sqlalchemy.sql.expression import func
+from sqlalchemy.sql.expression import func
 from sqlalchemy_utils import ChoiceType, URLType
 
-from download import dowload_media
+from download import download_media
 from utils.date import now, folder_date
 from storage import upload_file
 
@@ -110,7 +110,7 @@ class Advertisement(Base):
 
     @classmethod
     def save_media(cls, url):
-        if media_path := dowload_media(url):
+        if media_path := download_media(url):
             dest = f"medias/ads/{folder_date()}/{now()}_{slugify(url[:100])}.png"
             upload_file(media_path, dest)
             return dest

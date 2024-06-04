@@ -8,7 +8,7 @@ from plog import logger
 
 
 @retry(stop=stop_after_attempt(3), wait=wait_fixed(2))
-def dowload_media(url):
+def _download_media(url):
     if url is None:
         return
     logger.info(f"Downloading media {url}...")
@@ -19,3 +19,13 @@ def dowload_media(url):
         fobj.write(resp.content)
     logger.info("Done")
     return temp_file.name
+
+
+def download_media(url):
+    media = None
+    try:
+        media = _download_media(url)
+    except Exception:
+        logger.info(f"Error downloadinf media {url}")
+
+    return media
