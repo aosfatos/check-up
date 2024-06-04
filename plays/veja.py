@@ -90,15 +90,23 @@ class VejaPlay(BasePlay):
 
             elements = self.parse_elements(elements)
             hrefs = self.get_hrefs(elements)
+
+            elements_content = [ele.inner_html() for ele in elements]
+
+            # Stop using proxy
+            logger.info("Disabling proxy...")
+            browser.close()
+            browser = self.launch_browser(p, use_proxy=False)
             page = browser.new_page()
+            logger.info("Done!")
+
             ad_items = []
-            for element, href in zip(elements, hrefs):
+            for element_content, href in zip(elements_content, hrefs):
                 logger.info(f"Opening AD URL '{href}'")
                 page.goto(href, timeout=60_000)
                 time.sleep(self.wait_time)
                 logger.info(f"Getting page content '{href}'")
                 page_content = page.content()
-                element_content = element.inner_html()
                 try:
                     page.locator(".news__image_big").inner_html()
                     ad_items.append(self.find_items_mgid_page(page_content, element_content))
