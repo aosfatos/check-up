@@ -11,7 +11,7 @@ from plog import logger
 
 class VejaPlay(BasePlay):
     name = "veja"
-    n_expected_ads = 13
+    n_expected_ads = 10
 
     @classmethod
     def match(cls, url):
@@ -120,7 +120,7 @@ class VejaPlay(BasePlay):
                 except PlaywrightTimeoutError:
                     ad_items.append(self.find_items(page_content, element_content))
 
-            logger.info("[{self.name}] Done")
+            logger.info(f"[{self.name}] Done")
             return EntryItem(
                 title=entry_title,
                 url=self.url,

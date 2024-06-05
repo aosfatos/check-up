@@ -63,13 +63,14 @@ def main():
     entry.save_screenshot(session, entry_item.screenshot_path)
     logger.info(f"Saved entry with id: {entry.id}")
     ads = []
-    for ad_item in entry_item.ads:
+    n_ads = len(entry_item.ads)
+    for i, ad_item in enumerate(entry_item.ads, start=1):
 
         if not ad_item.is_valid():
-            logger.warning(f"Ad {ad_item} is not valid")
+            logger.warning(f"[{portal.slug}] Ad {ad_item} is not valid")
             continue
 
-        logger.info(f"[{portal.slug}] Saving AD: '{ad_item.title}'")
+        logger.info(f"[{portal.slug}] Saving AD ({i}/{n_ads}): '{ad_item.title}'")
         ad_screenshot_url = Advertisement.save_screenshot(
             ad_item.screenshot_path,
             ad_item.url,
