@@ -94,18 +94,25 @@ class VejaPlay(BasePlay):
             elements_content = [ele.inner_html() for ele in elements]
 
             # Stop using proxy
-            logger.info("Disabling proxy...")
+            logger.info(f"[{self.name}] Disabling proxy...")
             browser.close()
             browser = self.launch_browser(p, use_proxy=False)
             page = browser.new_page()
-            logger.info("Done!")
+            logger.info(f"[{self.name}] Done!")
 
             ad_items = []
             for element_content, href in zip(elements_content, hrefs):
-                logger.info(f"Opening AD URL '{href}'")
-                page.goto(href, timeout=60_000)
+                logger.info(f"[{self.name}] Opening AD URL '{href}'")
+
+                # TODO: create `goto` method that has an option to not raise timeout exception
+                try:
+                    page.goto(href, timeout=90_000)
+                except PlaywrightTimeoutError as exc:
+                    logger.warning(f"[{self.name}] {exc}")
+                    continue
+
                 time.sleep(self.wait_time)
-                logger.info(f"Getting page content '{href}'")
+                logger.info(f"[{self.name}] Getting page content '{href}'")
                 page_content = page.content()
                 try:
                     page.locator(".news__image_big").inner_html()
@@ -113,7 +120,7 @@ class VejaPlay(BasePlay):
                 except PlaywrightTimeoutError:
                     ad_items.append(self.find_items(page_content, element_content))
 
-            logger.info("Done")
+            logger.info("[{self.name}] Done")
             return EntryItem(
                 title=entry_title,
                 url=self.url,
