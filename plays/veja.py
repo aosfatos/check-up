@@ -93,13 +93,6 @@ class VejaPlay(BasePlay):
 
             elements_content = [ele.inner_html() for ele in elements]
 
-            # Stop using proxy
-            logger.info(f"[{self.name}] Disabling proxy...")
-            browser.close()
-            browser = self.launch_browser(p, use_proxy=False)
-            page = browser.new_page()
-            logger.info(f"[{self.name}] Done!")
-
             ad_items = []
             for element_content, href in zip(elements_content, hrefs):
                 logger.info(f"[{self.name}] Opening AD URL '{href}'")
