@@ -14,6 +14,7 @@ class AdItem:
     def is_valid(self):
         if self.url is None or self.title is None:
             return False
+        return True
 
     def __str__(self):
         return f"{self.title}: ({self.url[:50]})"
