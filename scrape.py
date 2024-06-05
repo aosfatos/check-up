@@ -64,7 +64,12 @@ def main():
     logger.info(f"Saved entry with id: {entry.id}")
     ads = []
     for ad_item in entry_item.ads:
-        logger.info(f"[{entry.id}] Saving AD: '{ad_item.title}'")
+
+        if not ad_item.is_valid():
+            logger.warning(f"Ad {ad_item} is not valid")
+            continue
+
+        logger.info(f"[{portal.slug}] Saving AD: '{ad_item.title}'")
         ad_screenshot_url = Advertisement.save_screenshot(
             ad_item.screenshot_path,
             ad_item.url,
@@ -83,7 +88,7 @@ def main():
             )
         )
 
-    logger.info(f"[{entry.id}] Saving {len(ads)} ads to database")
+    logger.info(f"[{portal.slug}] Saving {len(ads)} ads to database")
     session.add_all(ads)
     session.commit()
     logger.info(f"[{portal.slug}] Done scraping entry {entry.id}")
