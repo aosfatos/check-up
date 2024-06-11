@@ -32,6 +32,7 @@ def main():
     url_obj = URLQueue.next_random(session)
     if url_obj is None:
         logger.info("Queue is empty")
+        session.close()
         return
 
     logger.info(f"Processing URL '{url_obj.url}' from queue...")
