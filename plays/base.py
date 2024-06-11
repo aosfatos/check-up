@@ -14,7 +14,6 @@ from plog import logger
 class BasePlay:
     name = "base"
     n_expected_ads = 0
-    kwargs = dict()
 
     def __init__(
         self,
@@ -39,11 +38,15 @@ class BasePlay:
         raise NotImplementedError()
 
     @classmethod
+    def get_options(cls):
+        return dict()
+
+    @classmethod
     def get_scraper(cls, url, *args, **kwargs):
         scrapers = cls.__subclasses__()
         for scraper in scrapers:
             if scraper.match(url):
-                return scraper(url, *args, **scraper.kwargs)
+                return scraper(url, *args, **scraper.get_options())
 
         raise ScraperNotFoundError(f"No scraper was found for url '{url}'")
 

@@ -12,7 +12,6 @@ from plog import logger
 class GloboPlay(BasePlay):
     name = "globo"
     n_expected_ads = 50
-    kwargs = {"allow_remove_session": False}
 
     def login(self):
         with sync_playwright() as p:
@@ -30,6 +29,10 @@ class GloboPlay(BasePlay):
     @classmethod
     def match(cls, url):
         return "oglobo.globo.com/" in url
+
+    @classmethod
+    def get_options(cls):
+        return {"allow_remove_session": False}
 
     def find_items(self, html_content) -> AdItem:
         return AdItem(
