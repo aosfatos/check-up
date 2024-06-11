@@ -6,6 +6,7 @@ from typing import List
 from playwright.sync_api import TimeoutError as PlayWrightTimeoutError, sync_playwright
 
 from plays.items import AdItem, EntryItem
+from plays.timeout import PlayTimeout, PlayerTimeoutError
 from plays.exceptions import NotEnoughADSFound, ScraperNotFoundError
 from plog import logger
 
@@ -23,6 +24,7 @@ class BasePlay:
         headless=True,
         retries=3,
         allow_remove_session=True,
+        timeout_seconds=600,
     ):
         self.url = url
         self.session_dir = session_dir
@@ -30,6 +32,7 @@ class BasePlay:
         self.headless = headless
         self.retries = retries
         self.allow_remove_session = allow_remove_session
+        self.timeout_seconds = timeout_seconds
 
     @classmethod
     def match(cls, url):
@@ -131,25 +134,27 @@ class BasePlay:
     def execute(self, retries=2):
         entry_item = None
         self.pre_run()
-        # TODO: retry
         while self.not_enough_items(entry_item) and retries >= 0:
             try:
-                entry_item = self.run()
+                with PlayTimeout(seconds=self.timeout_seconds, name=self.name):
+                    entry_item = self.run()
                 logger.info(f"[{self.name}]: Found {len(entry_item.ads)} items.")
             except PlayWrightTimeoutError as exc:
                 logger.error(str(exc))
+            except PlayerTimeoutError as exc:
+                logger.error(str(exc))
 
             if self.not_enough_items(entry_item):
-                retries -= 1
                 logger.warning(
                     f"[{self.name}] Not enough ADs were found with '{self.name}'."
                     f" Trying again. Remaining {retries}"
                 )
-                # Remove session and login again. It sometimes works
+                # Remove session and login again. It sometimes work
                 self.remove_session()
+                retries -= 1
 
         if self.not_enough_items(entry_item):
-            raise NotEnoughADSFound()
+            raise NotEnoughADSFound(f"[{self.name}] Not enough ads were found in '{self.url}'")
 
         entry_item = self.post_run(entry_item)
         if entry_item is not None:
