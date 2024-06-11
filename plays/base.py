@@ -78,14 +78,14 @@ class BasePlay:
         logger.info(f"[{self.name}] Launching browser...'")
         if self.proxy is not None and use_proxy:
             logger.info(f"[{self.name}] Using proxy")
-            return playwright_obj.chromium.launch_persistent_context(
+            return playwright_obj.firefox.launch_persistent_context(
                 self.get_session_dir(),
                 headless=self.headless,
                 proxy=self.proxy,
                 *args,
                 **kwargs,
             )
-        return playwright_obj.chromium.launch_persistent_context(
+        return playwright_obj.firefox.launch_persistent_context(
             self.get_session_dir(),
             headless=self.headless,
             *args,
