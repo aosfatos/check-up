@@ -14,6 +14,7 @@ class VejaSpider(BaseSpider):
             entry_url.startswith("https://veja.abril.com.br")
             and len(entry_url) > 100
             and not entry_url.startswith("https://veja.abril.com.br/ofertas")
+            and "wp-content/uploads" not in entry_url
         )
 
     def parse(self, response):
