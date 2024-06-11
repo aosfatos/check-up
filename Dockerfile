@@ -33,6 +33,6 @@ ENV PATH=/usr/src/.venv/bin:$PATH
 COPY . .
 
 ENV PLAYWRIGHT_BROWSERS_PATH=/project/playwright
-RUN playwright install --with-deps firefox
+RUN playwright install --with-deps chromium
 
 CMD ipython
