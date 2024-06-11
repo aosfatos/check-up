@@ -17,7 +17,8 @@ class AdItem:
         return True
 
     def __str__(self):
-        return f"{self.title}: ({self.url[:50]})"
+        url = self.url[:50] if self.url else None
+        return f"{self.title}: ({url})"
 
 
 @dataclass
