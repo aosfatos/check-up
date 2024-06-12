@@ -247,5 +247,4 @@ DataDirectory /var/lib/tor
 ## The %include option can be used recursively.
 #%include /etc/torrc.d/*.conf
 
-MaxCircuitDirtiness 30
 ExitNodes {br}
