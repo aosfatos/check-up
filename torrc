@@ -1,0 +1,4 @@
+EntryNodes {BR} StrictNodes 1
+MiddleNodes {BR} StrictNodes 1
+ExitNodes {BR} StrictNodes 1
+SocksPort 0.0.0.0:9050

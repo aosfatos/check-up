@@ -20,9 +20,7 @@ class VejaPlay(BasePlay):
     @property
     def proxy(self):
         return {
-            "server": config("OXYLABS_PROXY_SERVER"),
-            "username": config("OXYLABS_USERNAME"),
-            "password": config("OXYLABS_PASSWORD"),
+            "server": "socks5://tor:9050",
         }
 
     def find_items_mgid_page(self, html_content, element_content) -> AdItem:
