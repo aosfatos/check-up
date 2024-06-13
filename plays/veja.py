@@ -17,11 +17,9 @@ class VejaPlay(BasePlay):
     def match(cls, url):
         return "veja.abril.com.br" in url
 
-    @property
-    def proxy(self):
-        return {
-            "server": "socks5://tor:9050",
-        }
+    @classmethod
+    def get_options(cls):
+        return {"proxy": {"server": "socks5://tor:9050"}}
 
     def find_items_mgid_page(self, html_content, element_content) -> AdItem:
         return AdItem(

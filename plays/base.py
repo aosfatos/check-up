@@ -19,6 +19,7 @@ class BasePlay:
         self,
         url,
         session_dir=None,
+        proxy=None,
         wait_time=3,
         headless=True,
         retries=3,
@@ -27,6 +28,7 @@ class BasePlay:
     ):
         self.url = url
         self.session_dir = session_dir
+        self.proxy = proxy
         self.wait_time = wait_time
         self.headless = headless
         self.retries = retries
@@ -49,10 +51,6 @@ class BasePlay:
                 return scraper(url, *args, **scraper.get_options())
 
         raise ScraperNotFoundError(f"No scraper was found for url '{url}'")
-
-    @property
-    def proxy(self):
-        return None
 
     def get_session_dir(self):
         if self.session_dir is None:
