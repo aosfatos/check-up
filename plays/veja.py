@@ -21,9 +21,9 @@ class VejaPlay(BasePlay):
     def extra_kwargs(cls):
         return {
             "proxy": {
-                "server": config("OXYLABS_PROXY_SERVER"),
-                "username": config("OXYLABS_USERNAME"),
-                "password": config("OXYLABS_PASSWORD"),
+                "server": config("PROXY_SERVER"),
+                "username": config("PROXY_USERNAME"),
+                "password": config("PROXY_PASSWORD"),
             }
         }
         return {"proxy": {"server": "socks5://tor:9050"}}
