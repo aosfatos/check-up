@@ -40,7 +40,7 @@ class BasePlay:
         raise NotImplementedError()
 
     @classmethod
-    def get_options(cls):
+    def extra_kwargs(cls):
         return dict()
 
     @classmethod
@@ -48,7 +48,7 @@ class BasePlay:
         scrapers = cls.__subclasses__()
         for scraper in scrapers:
             if scraper.match(url):
-                return scraper(url, *args, **scraper.get_options())
+                return scraper(url, *args, **scraper.extra_kwargs())
 
         raise ScraperNotFoundError(f"No scraper was found for url '{url}'")
 

@@ -31,7 +31,7 @@ class GloboPlay(BasePlay):
         return "oglobo.globo.com/" in url
 
     @classmethod
-    def get_options(cls):
+    def extra_kwargs(cls):
         return {"allow_remove_session": False}
 
     def find_items(self, html_content) -> AdItem:
