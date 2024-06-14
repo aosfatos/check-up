@@ -26,7 +26,6 @@ class VejaPlay(BasePlay):
                 "password": config("PROXY_PASSWORD"),
             }
         }
-        return {"proxy": {"server": "socks5://tor:9050"}}
 
     def find_items_mgid_page(self, html_content, element_content) -> AdItem:
         return AdItem(
