@@ -14,15 +14,6 @@ services:
       - db
       - tor
 
-  tor:
-    build:
-      context: .
-      dockerfile: Dockerfile.tor
-    container_name: healthcheck_tor
-    restart: always
-    ports:
-      - "9050:9050"
-      - "9051:9051"
   db:
     image: postgres:16
     container_name: healthcheck_db
