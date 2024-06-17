@@ -12,8 +12,6 @@ services:
     tty: true
     depends_on:
       - db
-      - tor
-
   db:
     image: postgres:16
     container_name: healthcheck_db
