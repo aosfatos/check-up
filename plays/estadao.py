@@ -82,8 +82,6 @@ class EstadaoPlay(BasePlay):
             for obj in objects:
                 ad_items.append(self.find_items(obj))
 
-        # TODO: define variable to control if player should or not the session
-        self.remove_session()
         return EntryItem(
             title=entry_title,
             url=self.url,
