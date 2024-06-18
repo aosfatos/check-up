@@ -17,16 +17,6 @@ class EstadaoPlay(BasePlay):
     def match(cls, url):
         return "estadao.com.br" in url
 
-    @classmethod
-    def extra_kwargs(cls):
-        return {
-            "proxy": {
-                "server": config("PROXY_SERVER"),
-                "username": config("PROXY_USERNAME"),
-                "password": config("PROXY_PASSWORD"),
-            }
-        }
-
     def login(self):
         with sync_playwright() as p:
             browser = self.launch_browser(p)
