@@ -73,9 +73,9 @@ class EstadaoPlay(BasePlay):
             logger.info(f"[{self.name}] Searching for ads...")
             time.sleep(self.wait_time)
             page.locator(".bug-block-wrapper").scroll_into_view_if_needed()
-            self.scroll_down(page, 10, 400, wait_time=1)
+            time.sleep(self.wait_time)
+            self.scroll_down(page, 10, 600, wait_time=1)
             elements = page.locator(".ob-dynamic-rec-container")
-            time.sleep(self.wait_time * 2)
 
             entry_screenshot_path = self.take_screenshot(page, self.url, goto=False)
 
