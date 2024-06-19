@@ -36,7 +36,10 @@ class EstadaoPlay(BasePlay):
             browser.close()
 
     def pre_run(self):
-        pass
+        try:
+            self.login()
+        except PlayWrightTimeoutError:
+            logger.warning("Timeout trying to log in. Probably already logged in")
 
     def get_objects(self, elements):
         n_elements = elements.count()
