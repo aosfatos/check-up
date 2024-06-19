@@ -69,8 +69,8 @@ class EstadaoPlay(BasePlay):
             time.sleep(self.wait_time)
             logger.info(f"[{self.name}] Searching for ads...")
             time.sleep(self.wait_time)
-            self.scroll_down(page, 40, 400, wait_time=1)
-            page.locator(".OB-REACT-WRAPPER").scroll_into_view_if_needed()
+            page.locator(".bug-block-wrapper").scroll_into_view_if_needed()
+            self.scroll_down(page, 10, 400, wait_time=1)
             elements = page.locator(".ob-dynamic-rec-container")
             time.sleep(self.wait_time * 2)
 
