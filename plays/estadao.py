@@ -85,6 +85,7 @@ class EstadaoPlay(BasePlay):
             for obj in objects:
                 ad_items.append(self.find_items(obj))
 
+        self.remove_session()
         return EntryItem(
             title=entry_title,
             url=self.url,
