@@ -10,7 +10,7 @@ from plog import logger
 
 class ClicRBSPlay(BasePlay):
     name = "clicrbs"
-    n_expected_ads = 10
+    n_expected_ads = 3
 
     @classmethod
     def match(cls, url):
