@@ -36,11 +36,10 @@ class ClicRBSPlay(BasePlay):
             page.goto(self.url, timeout=180_000)
             logger.info(f"[{self.name}] Searching for ads...")
             self.scroll_down(page, 10, amount=500)
-            page.locator("#taboola-below-article-thumbnails").scroll_into_view_if_needed()
             time.sleep(self.wait_time * 2)
 
             entry_screenshot_path = self.take_screenshot(page, self.url, goto=False)
-            entry_title = page.locator("h1.m-headline").first.inner_text()
+            entry_title = page.locator("h1").first.inner_text()
 
             elements = page.locator(".videoCube")
             ad_items = []
