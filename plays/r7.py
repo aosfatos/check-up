@@ -10,7 +10,7 @@ from plog import logger
 
 class R7Play(BasePlay):
     name = "r7"
-    n_expected_ads = 20
+    n_expected_ads = 10
 
     @classmethod
     def match(cls, url):
@@ -36,11 +36,9 @@ class R7Play(BasePlay):
             page.goto(self.url, timeout=180_000)
             logger.info(f"[{self.name}] Searching for ads...")
             # Try to avoid 'Element is not attached to the DOM'
-            page.locator("#taboola-below-article-thumbnails").click()
-            page.locator("#taboola-below-article-thumbnails").scroll_into_view_if_needed()
-
             entry_screenshot_path = self.take_screenshot(page, self.url, goto=False)
             entry_title = page.locator("head title").inner_text()
+            self.scroll_down(page, 40, 400, wait_time=1)
             time.sleep(self.wait_time * 2)
 
             elements = page.locator(".videoCube")
