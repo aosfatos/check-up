@@ -38,8 +38,19 @@ class R7Play(BasePlay):
             # Try to avoid 'Element is not attached to the DOM'
             entry_screenshot_path = self.take_screenshot(page, self.url, goto=False)
             entry_title = page.locator("head title").inner_text()
-            self.scroll_down(page, 40, 400, wait_time=1)
-            time.sleep(self.wait_time * 2)
+
+            self.scroll_down(page, 10, 400, wait_time=1)
+            # Try to avoid 'Element is not attached to the DOM'
+            try:
+                page.locator("#taboola-below-article-thumbnails").click()
+                page.locator("#taboola-below-article-thumbnails").scroll_into_view_if_needed()
+            except Exception:
+                logger.warning(
+                    f"[{self.name}] Timeout error waiting for 'taboola-below-article-thumbnails'"
+                )
+
+            time.sleep(self.wait_time)
+            self.scroll_down(page, 30, 400, wait_time=1)
 
             elements = page.locator(".videoCube")
             ad_items = []
