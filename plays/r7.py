@@ -10,7 +10,7 @@ from plog import logger
 
 class R7Play(BasePlay):
     name = "r7"
-    n_expected_ads = 10
+    n_expected_ads = 20
 
     @classmethod
     def match(cls, url):
