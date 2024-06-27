@@ -35,7 +35,12 @@ class MetropolesPlay(BasePlay):
             logger.info(f"[{self.name}] Opening URL '{self.url}'...")
             page.goto(self.url, timeout=180_000)
             logger.info(f"[{self.name}] Searching for ads...")
-            page.locator("#taboola-below-article-thumbnails").scroll_into_view_if_needed()
+            try:
+                page.locator("#taboola-below-article-thumbnails").scroll_into_view_if_needed()
+            except Exception:
+                logger.warning(
+                    f"[{self.name}] Timeout error waiting for 'taboola-below-article-thumbnails'"
+                )
             time.sleep(self.wait_time * 2)
 
             entry_screenshot_path = self.take_screenshot(page, self.url, goto=False)

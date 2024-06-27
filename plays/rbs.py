@@ -35,8 +35,16 @@ class ClicRBSPlay(BasePlay):
             logger.info(f"[{self.name}] Opening URL '{self.url}'...")
             page.goto(self.url, timeout=180_000)
             logger.info(f"[{self.name}] Searching for ads...")
-            self.scroll_down(page, 10, amount=500)
-            time.sleep(self.wait_time * 2)
+            self.scroll_down(page, 10, amount=400, wait_time=1)
+            try:
+                page.locator("#taboola-below-article-thumbnails-new").scroll_into_view_if_needed()
+            except Exception:
+                logger.warning(
+                    f"[{self.name}] Timeout error waiting for 'taboola-below-article-thumbnails-new'"
+                )
+
+            time.sleep(self.wait_time)
+            self.scroll_down(page, 10, amount=400, wait_time=1)
 
             entry_screenshot_path = self.take_screenshot(page, self.url, goto=False)
             entry_title = page.locator("h1").first.inner_text()
