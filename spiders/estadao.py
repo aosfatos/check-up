@@ -10,6 +10,8 @@ class EstadaoSpider(BaseSpider):
     allowed_domains = ["estadao.com.br"]
 
     def allow_url(self, entry_url):
+        # TODO: remover www.estadao.com.br/recomenda/
+        # TODO: remover web-stories
         return entry_url.startswith("https://www.estadao.com.br") and len(entry_url) > 100
 
     def parse(self, response):
