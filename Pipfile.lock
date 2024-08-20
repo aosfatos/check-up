@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "9d90ce4d6aa318aad6cde67bce619a29d4b8d6dd2ffd02a8729e54954aca5d69"
+            "sha256": "4946aa561a20ed6a76fce0c624fe3c2bd2f0155f9d38d6641cb341fe159a1c52"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -399,7 +399,7 @@
                 "sha256:fd096eb7ffef17c456cfa587523c5f92321ae02427ff955bebe9e3c63bc9f0da",
                 "sha256:fe754d231288e1e64323cfad462fcee8f0288654c10bdf4f603a39ed923bef33"
             ],
-            "markers": "python_version >= '3.7'",
+            "markers": "platform_machine == 'aarch64' or (platform_machine == 'ppc64le' or (platform_machine == 'x86_64' or (platform_machine == 'amd64' or (platform_machine == 'AMD64' or (platform_machine == 'win32' or platform_machine == 'WIN32')))))",
             "version": "==3.0.3"
         },
         "h11": {
@@ -766,7 +766,8 @@
                 "sha256:f1659887361a7151f89e79b276ed8dff3d75877df906328f14d8bb40bb4f5101",
                 "sha256:f9cf5ea551aec449206954b075db819f52adc1638d46a6738253a712d553c7b4"
             ],
-            "markers": "python_version < '3.11'",
+            "index": "pypi",
+            "markers": "python_version >= '3.9'",
             "version": "==2.0.1"
         },
         "openai": {
