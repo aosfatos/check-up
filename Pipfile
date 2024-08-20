@@ -21,6 +21,7 @@ tenacity = "==8.3.0"
 requests = "==2.32.3"
 pydantic = "==2.8.2"
 openai = "==1.41.1"
+pandas = "==2.2.2"
 
 [dev-packages]
 freezegun = "==1.5.1"

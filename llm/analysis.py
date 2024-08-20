@@ -1,5 +1,8 @@
+import os
+
 import pandas
 import numpy as np
+import psycopg2 as pg
 from openai import OpenAI
 from pydantic import BaseModel
 from tqdm import tqdm
@@ -23,9 +26,8 @@ def classify(prompt):
 
 
 if __name__ == "__main__":
-    df = pandas.read_excel("stratified_sampling_31_07_2024_llm.xlsx")
-    # df["llm_prompt"] = None
-    # df["llm_classification"] = None
+    engine = pg.connect(os.environ.get("DATABASE_URL"))
+    df = pandas.read_sql("SELECT * FROM advertisement_mv WHERE internal_url=false", con=engine)
     prompt = """
     Classifique o anúncio abaixo em um seguintes temas: Automotivo, Casa e Jardim, Culinária e
     Gastronomia, Educação, Moda, Família e Relacionamentos, Finanças e Negócios, Saúde e Estética,
