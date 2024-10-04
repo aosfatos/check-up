@@ -19,6 +19,7 @@ def classify(prompt):
     completion = client.beta.chat.completions.parse(
         model="gpt-4o-mini",
         messages=[{"role": "user", "content": prompt}],
+        temperature=0.0,
         response_format=AdTheme,
     )
 
