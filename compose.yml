@@ -5,7 +5,7 @@ services:
     env_file: .env
     build:
       context: .
-    container_name: healthcheck_scraper
+    container_name: checkup_scraper
     volumes:
       - ./sessions/:/project/sessions/
       - ./logs/:/var/log/
@@ -14,7 +14,7 @@ services:
       - db
   db:
     image: postgres:16
-    container_name: healthcheck_db
+    container_name: checkup_db
     env_file: ./docker/.env-postgres
     ports:
       - "15433:5432"
