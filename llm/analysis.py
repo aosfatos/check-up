@@ -7,28 +7,22 @@ from openai import OpenAI
 from pydantic import BaseModel
 from tqdm import tqdm
 
+from llm import prompt
+
 
 client = OpenAI()
-
-PROMPT = """
-    Classifique o anúncio abaixo em um seguintes temas: Automotivo, Casa e Jardim, Culinária e
-    Gastronomia, Educação, Moda, Família e Relacionamentos, Finanças e Negócios, Saúde e Estética,
-    Tecnologia, Viagem e Turismo, Esportes, Política, Meio Ambiente, Cultura e Arte, Outros.
-    Responda apenas com o tema
-
-    {title}
-"""
 
 
 class AdTheme(BaseModel):
     name: str
 
 
-def classify_ad(title):
-    prompt = PROMPT.format(title=title)
+def classify_ad(title, tag):
+    tag = tag or ""
+    full_prompt = prompt.content.format(title=title, tag=tag)
     completion = client.beta.chat.completions.parse(
         model="gpt-4o-mini",
-        messages=[{"role": "user", "content": prompt}],
+        messages=[{"role": "user", "content": full_prompt}],
         temperature=0.0,
         response_format=AdTheme,
     )

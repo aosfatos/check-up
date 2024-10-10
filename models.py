@@ -242,9 +242,10 @@ def create_instance(session, model, **kwargs):
     return instance
 
 
-def get_classification(session, title):
+def get_classification(session, title, tag):
     advertisement = session(Advertisement).filter_by(
         title=title,
+        tag=tag,
         classification != None,  # noqa
     ).limit(1)
     try:

@@ -81,13 +81,13 @@ def main():
 
         logger.info(
             f"[{portal.slug}] Looking for existing classfication "
-            f"({i}/{n_ads}): '{ad_item.title}'"
+            f"({i}/{n_ads}): '{ad_item.title} - {ad_item.tag}'"
         )
 
-        classification = get_classification(session, ad_item.title)
+        classification = get_classification(session, ad_item.title, ad_item.tag)
         if classification is None:
             try:
-                classification = classify_ad(ad_item.title)
+                classification = classify_ad(ad_item.title, ad_item.tag)
                 logger.info(
                     f"[{portal.slug}] Classified AD with LLM"
                     f"({i}/{n_ads}): '{ad_item.title}' - '{classification}'"
