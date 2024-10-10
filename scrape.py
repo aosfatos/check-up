@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from plays.base import BasePlay
 from plog import logger
 from llm.analysis import classify_ad
+from llm.internal_url import is_internal
 from models import (
     Advertisement,
     Entry,
@@ -84,26 +85,32 @@ def main():
             f"({i}/{n_ads}): '{ad_item.title} - {ad_item.tag}'"
         )
 
-        category, category_verbose = get_classification(
-            session,
-            ad_item.title,
-            ad_item.tag,
-        )
-        if category is None:
-            try:
-                category, category_verbose = classify_ad(ad_item.title, ad_item.tag)
+        if not is_internal(ad_item.url):
+            category, category_verbose = get_classification(
+                session,
+                ad_item.title,
+                ad_item.tag,
+            )
+            if category is None:
+                try:
+                    category, category_verbose = classify_ad(ad_item.title, ad_item.tag)
+                    logger.info(
+                        f"[{portal.slug}] Classified AD with LLM "
+                        f"({i}/{n_ads}): '{ad_item.title}' - category: '{category}"
+                    )
+                except Exception as exc:
+                    logger.error(
+                        f"[{portal.slug}] Error classifying ad ({i}/{n_ads}): {exc}"
+                    )
+            else:
                 logger.info(
-                    f"[{portal.slug}] Classified AD with LLM"
-                    f"({i}/{n_ads}): '{ad_item.title}' - '{category}"
+                    f"[{portal.slug}] Found AD classification on DB "
+                    f"({i}/{n_ads}): '{ad_item.title}' - '{category}'"
                 )
-            except Exception as exc:
-                logger.error(
-                    f"[{portal.slug}] Error classifying ad ({i}/{n_ads}): {exc}"
-                )
+
         else:
-            logger.info(
-                f"[{portal.slug}] Found AD classification on DB "
-                f"({i}/{n_ads}): '{ad_item.title}' - '{category}'"
+            logger.warning(
+                f"[{portal.slug}] Ad URL is internal ({i}/{n_ads}): '{ad_item.url}'"
             )
 
         logger.info(f"[{portal.slug}] Saving AD ({i}/{n_ads}): '{ad_item.title}'")
