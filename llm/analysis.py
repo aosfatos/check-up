@@ -4,17 +4,18 @@ import pandas
 import numpy as np
 import psycopg2 as pg
 from openai import OpenAI
-from pydantic import BaseModel
+from pydantic import BaseModel, conint
 from tqdm import tqdm
 
 from llm import prompt
+from llm.categories import category_mapper
 
 
 client = OpenAI()
 
 
 class AdTheme(BaseModel):
-    name: str
+    category: conint(ge=0, le=44)
 
 
 def classify_ad(title, tag):
@@ -26,8 +27,9 @@ def classify_ad(title, tag):
         temperature=0.0,
         response_format=AdTheme,
     )
-
-    return completion.choices[0].message.parsed.name
+    category = completion.choices[0].message.parsed.category
+    category_verbose = category_mapper[category]
+    return category, category_verbose
 
 
 if __name__ == "__main__":
@@ -37,5 +39,6 @@ if __name__ == "__main__":
     for index, row in enumerate(tqdm(df.itertuples())):
         if row.llm_classification is not np.nan:
             continue
-        result = classify_ad(row.title)
-        df.loc[index, "llm_classification"] = result
+        category, category_verbose = classify_ad(row.title)
+        df.loc[index, "category"] = category
+        df.loc[index, "category_verbose"] = category_verbose

@@ -84,13 +84,17 @@ def main():
             f"({i}/{n_ads}): '{ad_item.title} - {ad_item.tag}'"
         )
 
-        classification = get_classification(session, ad_item.title, ad_item.tag)
-        if classification is None:
+        category, category_verbose = get_classification(
+            session,
+            ad_item.title,
+            ad_item.tag,
+        )
+        if category is None:
             try:
-                classification = classify_ad(ad_item.title, ad_item.tag)
+                category, category_verbose = classify_ad(ad_item.title, ad_item.tag)
                 logger.info(
                     f"[{portal.slug}] Classified AD with LLM"
-                    f"({i}/{n_ads}): '{ad_item.title}' - '{classification}'"
+                    f"({i}/{n_ads}): '{ad_item.title}' - '{category}"
                 )
             except Exception as exc:
                 logger.error(
@@ -99,7 +103,7 @@ def main():
         else:
             logger.info(
                 f"[{portal.slug}] Found AD classification on DB "
-                f"({i}/{n_ads}): '{ad_item.title}' - '{classification}'"
+                f"({i}/{n_ads}): '{ad_item.title}' - '{category}'"
             )
 
         logger.info(f"[{portal.slug}] Saving AD ({i}/{n_ads}): '{ad_item.title}'")
@@ -118,7 +122,8 @@ def main():
                 media=ad_media_url,
                 tag=ad_item.tag,
                 excerpt=ad_item.excerpt,
-                classification=classification,
+                category=category,
+                category_verbose=category_verbose,
             )
         )
 

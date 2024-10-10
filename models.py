@@ -92,7 +92,8 @@ class Advertisement(Base):
     screenshot = Column(String, nullable=True)
     excerpt = Column(String, nullable=True)
     media = Column(String, nullable=True)
-    classification = Column(String, nullable=True)
+    category = Column(Integer, nullable=True)
+    category_verbose = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
     entry: Mapped["Entry"] = relationship(back_populates="ads")
@@ -246,11 +247,13 @@ def get_classification(session, title, tag):
     advertisement = session(Advertisement).filter_by(
         title=title,
         tag=tag,
-        classification != None,  # noqa
+        category != None,  # noqa
     ).limit(1)
     try:
-        classification = advertisement[0].classification
+        category = advertisement[0].category
+        category_verbose = advertisement[0].category_verbose
     except IndexError:
-        classification = None
+        category = None
+        category_verbose = None
 
-    return classification
+    return category, category_verbose
