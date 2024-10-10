@@ -8,7 +8,15 @@ from sqlalchemy.orm import Session
 
 from plays.base import BasePlay
 from plog import logger
-from models import Advertisement, Entry, Portal, URLQueue, create_instance
+from llm.analysis import classify_ad
+from models import (
+    Advertisement,
+    Entry,
+    Portal,
+    URLQueue,
+    create_instance,
+    get_classification,
+)
 
 scheduler = sched.scheduler(time.time, time.sleep)
 
@@ -71,6 +79,29 @@ def main():
             logger.warning(f"[{portal.slug}] Ad {ad_item} is not valid")
             continue
 
+        logger.info(
+            f"[{portal.slug}] Looking for existing classfication "
+            f"({i}/{n_ads}): '{ad_item.title}'"
+        )
+
+        classification = get_classification(session, ad_item.title)
+        if classification is None:
+            try:
+                classification = classify_ad(ad_item.title)
+                logger.info(
+                    f"[{portal.slug}] Classified AD with LLM"
+                    f"({i}/{n_ads}): '{ad_item.title}' - '{classification}'"
+                )
+            except Exception as exc:
+                logger.error(
+                    f"[{portal.slug}] Error classifying ad ({i}/{n_ads}): {exc}"
+                )
+        else:
+            logger.info(
+                f"[{portal.slug}] Found AD classification on DB "
+                f"({i}/{n_ads}): '{ad_item.title}' - '{classification}'"
+            )
+
         logger.info(f"[{portal.slug}] Saving AD ({i}/{n_ads}): '{ad_item.title}'")
         ad_screenshot_url = Advertisement.save_screenshot(
             ad_item.screenshot_path,
@@ -87,6 +118,7 @@ def main():
                 media=ad_media_url,
                 tag=ad_item.tag,
                 excerpt=ad_item.excerpt,
+                classification=classification,
             )
         )
 

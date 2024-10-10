@@ -92,6 +92,7 @@ class Advertisement(Base):
     screenshot = Column(String, nullable=True)
     excerpt = Column(String, nullable=True)
     media = Column(String, nullable=True)
+    classification = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
     entry: Mapped["Entry"] = relationship(back_populates="ads")
@@ -239,3 +240,16 @@ def create_instance(session, model, **kwargs):
     session.add(instance)
     session.commit()
     return instance
+
+
+def get_classification(session, title):
+    advertisement = session(Advertisement).filter_by(
+        title=title,
+        classification != None,  # noqa
+    ).limit(1)
+    try:
+        classification = advertisement[0].classification
+    except IndexError:
+        classification = None
+
+    return classification
