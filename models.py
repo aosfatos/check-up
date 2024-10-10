@@ -244,7 +244,7 @@ def create_instance(session, model, **kwargs):
 
 
 def get_classification(session, title, tag):
-    advertisement = session(Advertisement).filter_by(
+    advertisement = session.query(Advertisement).filter_by(
         category != None,  # noqa
         title=title,
         tag=tag,
