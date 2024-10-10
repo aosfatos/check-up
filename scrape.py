@@ -80,12 +80,11 @@ def main():
             logger.warning(f"[{portal.slug}] Ad {ad_item} is not valid")
             continue
 
-        logger.info(
-            f"[{portal.slug}] Looking for existing classfication "
-            f"({i}/{n_ads}): '{ad_item.title} - {ad_item.tag}'"
-        )
-
         if not is_internal(ad_item.url):
+            logger.info(
+                f"[{portal.slug}] Looking for existing classfication "
+                f"({i}/{n_ads}): '{ad_item.title} - {ad_item.tag}'"
+            )
             category, category_verbose = get_classification(
                 session,
                 ad_item.title,
@@ -107,8 +106,9 @@ def main():
                     f"[{portal.slug}] Found AD classification on DB "
                     f"({i}/{n_ads}): '{ad_item.title}' - '{category}'"
                 )
-
         else:
+            category = None
+            category_verbose = None
             logger.warning(
                 f"[{portal.slug}] Ad URL is internal ({i}/{n_ads}): '{ad_item.url}'"
             )
