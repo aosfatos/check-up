@@ -246,7 +246,7 @@ def create_instance(session, model, **kwargs):
 def get_classification(session, title, tag):
     advertisement = session.query(Advertisement).filter(
         Advertisement.category.isnot(None)
-    ).filter(title=title, tag=tag).limit(1)
+    ).filter_by(title=title, tag=tag).limit(1)
     try:
         category = advertisement[0].category
         category_verbose = advertisement[0].category_verbose

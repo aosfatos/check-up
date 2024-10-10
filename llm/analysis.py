@@ -4,7 +4,7 @@ import pandas
 import numpy as np
 import psycopg2 as pg
 from openai import OpenAI
-from pydantic import BaseModel, conint
+from pydantic import BaseModel
 from tqdm import tqdm
 
 from llm import prompt
@@ -15,7 +15,7 @@ client = OpenAI()
 
 
 class AdTheme(BaseModel):
-    category: conint(ge=0, le=44)
+    category: int
 
 
 def classify_ad(title, tag):
@@ -28,7 +28,7 @@ def classify_ad(title, tag):
         response_format=AdTheme,
     )
     category = completion.choices[0].message.parsed.category
-    category_verbose = category_mapper[category]
+    category_verbose = category_mapper(category)
     return category, category_verbose
 
 
