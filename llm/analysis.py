@@ -22,7 +22,7 @@ def classify_ad(title, tag):
     tag = tag or ""
     full_prompt = prompt.content.format(title=title, tag=tag)
     completion = client.beta.chat.completions.parse(
-        model="gpt-4",
+        model="gpt-4o-2024-08-06",
         messages=[{"role": "user", "content": full_prompt}],
         temperature=0.0,
         response_format=AdTheme,
