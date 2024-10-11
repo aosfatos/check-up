@@ -160,4 +160,5 @@ class CorreioBraziliensePlay(BasePlay):
 Este script irá procurar por anúncios nativos em cada umas das notícias coletadas no
 portal Correio Braziliense.
 
-**Nota**: Os scripts dependem da estrutura HTML dos portais e podem precisar de ajustes após atualizações nos sites.
+## Importante
+Os scripts dependem da estrutura HTML dos portais e podem precisar de ajustes após atualizações nos sites.
