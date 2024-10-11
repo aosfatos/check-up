@@ -1,6 +1,3 @@
-import pandas
-from tqdm import tqdm
-
 mapper = {
     "clicrbs": ["gauchazh.clicrbs.com.br"],
     "estadao": ["www.estadao.com.br"],
@@ -30,11 +27,3 @@ def is_internal(url):
             return True
 
     return False
-
-
-if __name__ == "__main__":
-    df = pandas.read_excel("stratified_sampling_31_07_2024_llm.xlsx")
-    df["internal_link"] = None
-
-    for index, row in enumerate(df.itertuples()):
-        df.loc[index, "internal_link"] = is_internal(row.url)
