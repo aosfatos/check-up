@@ -21,6 +21,7 @@ def is_internal(url):
     portal_urls = [
         "gauchazh.clicrbs.com.br",
         "www.estadao.com.br",
+        "estadao.com.br",
         "folha.uol.com.br",
         "ig.com.br",
         "globo.com",
