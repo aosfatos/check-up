@@ -1,3 +1,6 @@
+bash:
+	docker compose exec -it scraper bash
+
 start:
 	docker compose -f compose.yml up
 
