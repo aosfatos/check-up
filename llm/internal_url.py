@@ -1,3 +1,6 @@
+from urllib.parse import urlparse
+
+
 mapper = {
     "clicrbs": ["gauchazh.clicrbs.com.br"],
     "estadao": ["www.estadao.com.br"],
@@ -11,6 +14,10 @@ mapper = {
 
 
 def is_internal(url):
+    try:
+        url = urlparse(url).netloc
+    except Exception:
+        pass
     portal_urls = [
         "gauchazh.clicrbs.com.br",
         "www.estadao.com.br",
