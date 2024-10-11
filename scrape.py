@@ -6,17 +6,15 @@ from decouple import config
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
+from classify import get_or_classify_ad
 from plays.base import BasePlay
 from plog import logger
-from llm.analysis import classify_ad
-from llm.internal_url import is_internal
 from models import (
     Advertisement,
     Entry,
     Portal,
     URLQueue,
     create_instance,
-    get_classification,
 )
 
 scheduler = sched.scheduler(time.time, time.sleep)
@@ -80,38 +78,7 @@ def main():
             logger.warning(f"[{portal.slug}] Ad {ad_item} is not valid")
             continue
 
-        if not is_internal(ad_item.url):
-            logger.info(
-                f"[{portal.slug}] Looking for existing classfication "
-                f"({i}/{n_ads}): '{ad_item.title} - {ad_item.tag}'"
-            )
-            category, category_verbose = get_classification(
-                session,
-                ad_item.title,
-                ad_item.tag,
-            )
-            if category is None:
-                try:
-                    category, category_verbose = classify_ad(ad_item.title, ad_item.tag)
-                    logger.info(
-                        f"[{portal.slug}] Classified AD with LLM "
-                        f"({i}/{n_ads}): '{ad_item.title}' - category: '{category}"
-                    )
-                except Exception as exc:
-                    logger.error(
-                        f"[{portal.slug}] Error classifying ad ({i}/{n_ads}): {exc}"
-                    )
-            else:
-                logger.info(
-                    f"[{portal.slug}] Found AD classification on DB "
-                    f"({i}/{n_ads}): '{ad_item.title}' - '{category}'"
-                )
-        else:
-            category = None
-            category_verbose = None
-            logger.warning(
-                f"[{portal.slug}] Ad URL is internal ({i}/{n_ads}): '{ad_item.url}'"
-            )
+        category, category_verbose = get_or_classify_ad(session, ad_item, portal, i, n_ads)
 
         logger.info(f"[{portal.slug}] Saving AD ({i}/{n_ads}): '{ad_item.title}'")
         ad_screenshot_url = Advertisement.save_screenshot(
