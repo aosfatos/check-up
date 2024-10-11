@@ -57,12 +57,12 @@ Após a coleta das notícias, o próximo passo é raspar os anúncios presentes 
 
 Para executar a coleta de todos os anúncios basta executar o comando:
 
-`make scrape`.
+`make scrape`
 
 ### 4- Adicionar um novo portal
 
 ##### 4.1 - Criar o spider
-Para adicionar o portal [Correio Braziliense]("https://www.correiobraziliense.com.br/"), por exemplo, crie um arquivo `spiders/correio.py` com o seguinte conteúdo:
+Para adicionar um novo portal as coletas, como por exemplo [Correio Braziliense]("https://www.correiobraziliense.com.br/"), crie um arquivo `spiders/correio.py` com o seguinte conteúdo:
 
 ```python
 import scrapy
@@ -88,6 +88,8 @@ class CorreioBrazilienseSpider(BaseSpider):
                 yield url_item
                 yield scrapy.Request(url=url, callback=self.parse)
 ```
+
+Este script irá buscar novas notícias publicadas na página inicial do Correio Braziliense.
 
 ##### 4.2 - Criar o Script Playwright
 Também será necessário criar um script Playwright correspondente ao novo portal para coletar anúncios. Crie um arquivo em `plays/correio.py` com o seguinte código:
@@ -154,5 +156,8 @@ class CorreioBraziliensePlay(BasePlay):
                 screenshot_path=entry_screenshot_path,
             )
 ```
+
+Este script irá procurar por anúncios nativos em cada umas das notícias coletadas no
+portal Correio Braziliense.
 
 **Nota**: Os scripts dependem da estrutura HTML dos portais e podem precisar de ajustes após atualizações nos sites.
