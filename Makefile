@@ -7,4 +7,7 @@ scrape:
 crawl:
 	docker compose scraper python crawl.py
 
+init_db:
+	docker compose scraper python create_db.py
+
 .PHONY: start scrape

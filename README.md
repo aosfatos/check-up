@@ -55,9 +55,6 @@ Para executar a coleta de todos os portais, utilize:
 
 Após a coleta das notícias, o próximo passo é raspar os anúncios presentes nas páginas das notícias. Esse processo utiliza a biblioteca [Playwright](https://playwright.dev/), para simular a navegação em um browser.
 
-Bem como os `spiders`, caso um novo portal seja adicionado, um novo script usando
-[playwright](https://playwright.dev/) deve ser desenvolvido e adicionado ao projeto.
-
 Para executar a coleta de todos os anúncios basta executar o comando:
 
 `make scrape`.
