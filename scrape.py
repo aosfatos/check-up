@@ -1,3 +1,4 @@
+import os
 import sched
 import time
 import traceback
@@ -20,6 +21,8 @@ from models import (
 scheduler = sched.scheduler(time.time, time.sleep)
 
 duration = 1
+
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 
 
 def event_loop():
@@ -78,7 +81,11 @@ def main():
             logger.warning(f"[{portal.slug}] Ad {ad_item} is not valid")
             continue
 
-        category, category_verbose = get_or_classify_ad(session, ad_item, portal, i, n_ads)
+        if OPENAI_API_KEY is not None:
+            category, category_verbose = get_or_classify_ad(session, ad_item, portal, i, n_ads)
+        else:
+            category = None
+            category_verbose = None
 
         logger.info(f"[{portal.slug}] Saving AD ({i}/{n_ads}): '{ad_item.title}'")
         ad_screenshot_url = Advertisement.save_screenshot(

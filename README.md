@@ -172,5 +172,11 @@ portal Correio Braziliense.
 **Nota:** o método `run` é responsavel por procurar os anúncios na estrutura HTML do site. Ele
 deve ser desenvolvido de acordo com estrutura de cada portal.
 
+## Classificação dos anúncios com LLM
+Cada anúncio coletado é classificado em uma das 45 categorias descritas em `llm/categories.py`.
+Esta classificação é opicional, para ativá-la basta adicionar sua chave de API da OpenAI à variável `OPENAI_API_KEY`.
+Para mais informações acesse o site da [OpenAI](https://platform.openai.com/docs/api-reference/api-keys).
+
+
 ## Importante
 Os scripts dependem da estrutura HTML dos portais e podem precisar de ajustes após atualizações nos sites.
