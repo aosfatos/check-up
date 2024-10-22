@@ -1,4 +1,4 @@
-# Checkup
+# Check-up
 
 ## Portais de notícias
 Este repositório inicialmente contempla a coleta de notícias dos seguintes portais:
