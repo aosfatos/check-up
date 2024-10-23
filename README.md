@@ -1,7 +1,7 @@
 # Check-up
 A Check-up é um projeto que tem como objetivo analisar a presença de desinformação em anúncios publicitários de saúde que circulam em grandes sites de notícias do Brasil.
 
-Este repositório contém o código de uma ferramenta desenvolvida pelo **Aos Fatos** para examinar os anúncios nativos de dez portais (listados abaixo). 
+Este repositório contém o código de uma ferramenta desenvolvida pelo [**Aos Fatos**](https://aosfatos.org) para examinar os anúncios nativos de dez portais (listados abaixo).
 
 A ferramenta tem três módulos: um crawler que coleta links de cada site, um raspador que captura e arquiva anúncios encontrados e um classificador de anúncios por tema que usa um grande modelo de linguagem (LLM).
 
