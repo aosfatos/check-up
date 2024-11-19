@@ -1,4 +1,5 @@
 # Check-up
+![cover](https://raw.githubusercontent.com/aosfatos/check-up/refs/heads/develop/cover.png)
 A Check-up é um projeto que tem como objetivo analisar a presença de desinformação em anúncios publicitários de saúde que circulam em grandes sites de notícias do Brasil.
 
 Este repositório contém o código de uma ferramenta desenvolvida pelo [**Aos Fatos**](https://aosfatos.org) para examinar os anúncios nativos de dez portais (listados abaixo).
