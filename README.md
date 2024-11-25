@@ -188,6 +188,17 @@ Cada anúncio coletado é classificado em uma das 45 categorias descritas em `ll
 Esta classificação é opicional, para ativá-la basta adicionar sua chave de API da OpenAI à variável `OPENAI_API_KEY`.
 Para mais informações acesse o site da [OpenAI](https://platform.openai.com/docs/api-reference/api-keys).
 
+## Armazenamento de arquivos
+Durante a coleta de anúncios, o script que simula o navegador irá registrar capturas de tela (`screenshots`) das páginas de notícias dos portais e das páginas dos anúncios.
+
+Para armazenar essas imagens, é necessário configurar um [Bucket S3](https://aws.amazon.com/pt/s3/) na Amazon Web Services (AWS) e atualizar as credenciais de acesso no arquivo `.env` com os seguintes parâmetros:
+
+- **AWS_ACCESS_KEY_ID**
+- **AWS_SECRET_ACCESS_KEY**
+- **AWS_S3_REGION_NAME**
+- **AWS_BUCKET_NAME**
+
+Os endereços S3 das imagens serão registrados no banco de dados do projeto, enquanto os arquivos das imagens serão armazenados no bucket configurado.
 
 ## Importante
 Os scripts dependem da estrutura HTML dos portais e podem precisar de ajustes após atualizações nos sites.
