@@ -11,8 +11,8 @@ Although it only works with the ten sites covered by the project, this code can 
 
 The code for this project may only be used for non-commercial purposes and with proper attribution.
 
-## News Portals
-This repository initially includes news collection from the following portals:
+## News websites
+This repository initially includes news collection from the following websites:
 
 - [Estadão](https://www.estadao.com.br)
 - [Folha](https://www.folha.uol.com.br)
@@ -42,8 +42,8 @@ To create the necessary tables, execute:
 
 The following tables will be created:
 
-- Portal: Information about the analyzed portals.
-- Entry: News articles collected from each portal.
+- website: Information about the analyzed websites.
+- Entry: News articles collected from each website.
 - Advertisement: Ads found in the news articles.
 - URLQueue: Queue of URLs for the scraping process.
 - QueueStatus: Status of each scraping queue.
@@ -51,11 +51,11 @@ The following tables will be created:
 **Note:** More details about the table structure are available in the `models.py` file.
 
 ### 2- Collect News URLs
-The first step is to collect URLs of news articles from the portals' homepages. Each portal has a "spider" implemented using the Scrapy library, located in the `spiders/` directory.
+The first step is to collect URLs of news articles from the websites' homepages. Each website has a "spider" implemented using the Scrapy library, located in the `spiders/` directory.
 
 Example script for [Folha]("https://www.folha.uol.com.br"): `spiders/folha.py`.
 
-To collect URLs from all portals, use:
+To collect URLs from all websites, use:
 
 `make crawl`
 
@@ -63,19 +63,19 @@ To collect URLs from all portals, use:
 
 After collecting news articles, the next step is to scrape ads present on the news pages. This process uses the [Playwright](https://playwright.dev/) library to simulate browser navigation.
 
-To collect ads from all portals, execute:
+To collect ads from all websites, execute:
 
 `make scrape`
 
-### 4- Add a New Portal
+### 4- Add a New website
 
-#### 4.1 - Add a New Portal to the Database
-To add a new portal, such as [Correio Braziliense](https://www.correiobraziliense.com.br/), insert the portal's information into the database:
+#### 4.1 - Add a New website to the Database
+To add a new website, such as [Correio Braziliense](https://www.correiobraziliense.com.br/), insert the website's information into the database:
 
 ```
 make bash
 
-python add_portal.py "Correio Braziliense" "https://www.correiobraziliense.com.br/"
+python add_website.py "Correio Braziliense" "https://www.correiobraziliense.com.br/"
 ```
 
 #### 4.2 - Create the Spider
@@ -108,7 +108,7 @@ class CorreioBrazilienseSpider(BaseSpider):
 This script will fetch new articles published on Correio Braziliense's homepage.
 
 #### 4.3 - Create the Playwright Script
-You will also need to create a corresponding Playwright script for the new portal to collect ads. Create a file in `plays/correio.py` with the following code:
+You will also need to create a corresponding Playwright script for the new website to collect ads. Create a file in `plays/correio.py` with the following code:
 
 ```python
 import time
@@ -172,16 +172,16 @@ class CorreioBraziliensePlay(BasePlay):
             )
 ```
 
-This script will search for native ads in the articles collected from the Correio Braziliense portal.
+This script will search for native ads in the articles collected from the Correio Braziliense website.
 
-**Note:** The `run` method is responsible for searching ads in the site's HTML structure. It should be developed according to each portal's structure.
+**Note:** The `run` method is responsible for searching ads in the site's HTML structure. It should be developed according to each website's structure.
 
 ## Ad Classification with LLM
 Each collected ad is classified into one of the 45 categories described in `llm/categories.py`. This classification is optional. To activate it, simply add your OpenAI API key to the `OPENAI_API_KEY` variable.  
 For more information, visit the [OpenAI](https://platform.openai.com/docs/api-reference/api-keys) site.
 
 ## File Storage
-During ad collection, the script simulating the browser will record screenshots of the portals' news pages and the ad pages.
+During ad collection, the script simulating the browser will record screenshots of the websites' news pages and the ad pages.
 
 To store these images, configure an [S3 Bucket](https://aws.amazon.com/s3/) on Amazon Web Services (AWS) and update the access credentials in the `.env` file with the following parameters:
 
@@ -193,4 +193,4 @@ To store these images, configure an [S3 Bucket](https://aws.amazon.com/s3/) on A
 The S3 addresses of the images will be recorded in the project's database, while the image files will be stored in the configured bucket.
 
 ## Important
-The scripts depend on the portals' HTML structure and may need adjustments after website updates.
+The scripts depend on the websites' HTML structure and may need adjustments after website updates.
