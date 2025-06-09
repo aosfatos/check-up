@@ -34,6 +34,10 @@ class ClicRBSPlay(BasePlay):
             page = browser.new_page()
             logger.info(f"[{self.name}] Opening URL '{self.url}'...")
             page.goto(self.url, timeout=180_000)
+            try:
+                page.locator("css=div.overlay div.root.page-1.page-last div.container button.close").click()
+            except Exception:
+                pass
             logger.info(f"[{self.name}] Searching for ads...")
             self.scroll_down(page, 10, amount=400, wait_time=1)
             try:
